@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventarisatie prestatieteam – MHC Rosmalen</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0E2A5A; --gold: #F5A800; --gold-dark: #C98A00;
+      --white: #fff; --gray-100: #F4F5F7; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-500: #6B7280;
+      --danger: #DC2626; --radius: 12px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--navy); min-height: 100vh; }
+    header { background: var(--navy); padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    header img { width: 44px; height: 44px; object-fit: contain; }
+    header h1 { color: var(--white); font-size: 1.1rem; font-weight: 600; line-height: 1.2; }
+    header span { color: var(--gold); display: block; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+    .back-link { margin-left: auto; font-size: 0.875rem; color: rgba(255,255,255,0.7); text-decoration: none; }
+    .back-link:hover { color: var(--white); }
+    main { max-width: 640px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    .form-header { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); border-top: 4px solid var(--gold); padding: 1.5rem; margin-bottom: 1rem; }
+    .form-header h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: .4rem; }
+    .form-header p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
+    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; margin-bottom: .75rem; }
+    label.field-label { display: block; font-size: 0.9375rem; font-weight: 500; margin-bottom: .6rem; }
+    .required { color: var(--danger); }
+    .hint { font-size: 0.8125rem; color: var(--gray-500); margin-bottom: .75rem; margin-top: -.25rem; line-height: 1.4; }
+    input[type=text], input[type=email], input[type=number] { width: 100%; padding: 9px 12px; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--white); color: var(--navy); outline: none; transition: border-color 0.15s; }
+    input[type=text]:focus, input[type=email]:focus, input[type=number]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,168,0,0.15); }
+    .grid-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .grid-table th { font-weight: 500; padding: 6px 4px; text-align: center; color: var(--gray-500); font-size: 0.8125rem; }
+    .grid-table td { padding: 8px 4px; text-align: center; border-top: 1px solid var(--gray-200); }
+    .grid-table td:first-child { text-align: left; padding-left: 0; }
+    .grid-table tr:hover td { background: var(--gray-100); }
+    input[type=checkbox], input[type=radio] { width: 16px; height: 16px; accent-color: var(--gold-dark); cursor: pointer; }
+    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .day-check { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; cursor: pointer; }
+    .radio-group { display: flex; flex-direction: column; gap: .5rem; }
+    .radio-group label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; cursor: pointer; }
+    .diploma-row { display: flex; gap: 1.5rem; }
+    .diploma-row label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; cursor: pointer; }
+    .error { font-size: 0.8125rem; color: var(--danger); margin-top: .4rem; display: none; }
+    .submit-btn { width: 100%; padding: 13px; font-family: inherit; font-size: 1rem; font-weight: 600; background: var(--navy); color: var(--white); border: none; border-radius: var(--radius); cursor: pointer; transition: background 0.15s; margin-top: .25rem; }
+    .submit-btn:hover { background: #0a1f45; }
+    .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .success-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 3rem 1.5rem; text-align: center; display: none; }
+    .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: .5rem; }
+    .success-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
+    .back-home { display: inline-block; margin-top: 1.5rem; padding: 10px 20px; background: var(--navy); color: var(--white); border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .gesloten-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); border-top: 4px solid var(--danger); padding: 2.5rem 1.5rem; text-align: center; display: none; }
+    .gesloten-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: .5rem; }
+    .gesloten-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" style="display:flex;align-items:center;gap:1rem;text-decoration:none">
+      <img src="logo_mhcrosmalen.gif" alt="Logo MHC Rosmalen">
+      <div>
+        <h1>MHC Rosmalen</h1>
+        <span>Technische commissie portaal</span>
+      </div>
+    </a>
+    <a href="index.html" class="back-link">← Terug naar overzicht</a>
+  </header>
+
+  <main>
+    <!-- Gesloten melding -->
+    <div class="gesloten-card" id="gesloten-card">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+      <h3>Inschrijving gesloten</h3>
+      <p id="gesloten-text">De inschrijving voor dit seizoen is momenteel gesloten. Neem contact op met de technische commissie voor meer informatie.</p>
+      <a href="index.html" class="back-home">← Terug naar overzicht</a>
+    </div>
+
+    <!-- Formulier -->
+    <div id="form-wrap" style="display:none">
+      <div class="form-header">
+        <h2>Inventarisatie <span id="seizoen-titel"></span></h2>
+        <p>In dit formulier doen we uitvraag naar trainingsdagen en wensen voor het aankomend seizoen. Velden met <span class="required">*</span> zijn verplicht.</p>
+      </div>
+
+      <div class="card">
+        <label class="field-label">E-mailadres <span class="required">*</span></label>
+        <input type="email" id="email" placeholder="jouw@email.nl" autocomplete="email">
+        <div class="error" id="err-email">Vul een geldig e-mailadres in.</div>
+      </div>
+      <div class="card">
+        <label class="field-label">Mijn naam is <span class="required">*</span></label>
+        <input type="text" id="naam" placeholder="Voor- en achternaam" autocomplete="name">
+        <div class="error" id="err-naam">Vul je naam in.</div>
+      </div>
+      <div class="card">
+        <label class="field-label">Mijn adres is <span class="required">*</span></label>
+        <input type="text" id="adres" placeholder="Straat, huisnummer, woonplaats">
+        <div class="error" id="err-adres">Vul je adres in.</div>
+      </div>
+      <div class="card">
+        <label class="field-label">Mijn telefoonnummer is <span class="required">*</span></label>
+        <input type="text" id="telefoon" placeholder="06-12345678" autocomplete="tel">
+        <div class="error" id="err-telefoon">Vul je telefoonnummer in.</div>
+      </div>
+      <div class="card">
+        <label class="field-label">Komend seizoen zet ik mij in voor dit/deze team(s) <span class="required">*</span></label>
+        <p class="hint">Meerdere teams? Scheid ze met een komma, bv. MO11-1, MO13-2</p>
+        <input type="text" id="teams" placeholder="Bv. MO11-1, MO13-2">
+        <div class="error" id="err-teams">Vul minimaal één team in.</div>
+      </div>
+      <!-- Hoe vaak training -->
+      <div class="card">
+        <label class="field-label">Hoe vaak wil ik training geven <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="freq" value="1"> 1 keer per week</label>
+          <label><input type="radio" name="freq" value="2"> 2 keer per week</label>
+          <label><input type="radio" name="freq" value="3+"> 3 of meer per week</label>
+        </div>
+        <div class="error" id="err-freq">Maak een keuze.</div>
+      </div>
+
+      <!-- Voorkeursdagen -->
+      <div class="card">
+        <label class="field-label">Mijn voorkeursdagen zijn <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="checkbox" name="voorkeursdag" value="Maandag"> Maandag</label>
+          <label><input type="checkbox" name="voorkeursdag" value="Dinsdag"> Dinsdag</label>
+          <label><input type="checkbox" name="voorkeursdag" value="Woensdag"> Woensdag</label>
+          <label><input type="checkbox" name="voorkeursdag" value="Donderdag"> Donderdag</label>
+          <label><input type="checkbox" name="voorkeursdag" value="Vrijdag"> Vrijdag</label>
+        </div>
+        <div class="error" id="err-voorkeursdag">Selecteer minimaal één dag.</div>
+      </div>
+
+      <!-- Vroeg training 17u — Ja/Nee grid per dag -->
+      <div class="card">
+        <label class="field-label">Op de volgende dag(en) zou ik om 17:00 uur training kunnen geven <span class="required">*</span></label>
+        <p class="hint">Elke dag worden er vroeg trainingen ingedeeld. Iedereen zal wel eens vroeg moeten starten.</p>
+        <table class="grid-table">
+          <thead><tr><th style="text-align:left"></th><th>Ja</th><th>Nee</th></tr></thead>
+          <tbody>
+            <tr><td>Maandag</td><td><input type="radio" name="vroeg_ma" value="ja"></td><td><input type="radio" name="vroeg_ma" value="nee"></td></tr>
+            <tr><td>Dinsdag</td><td><input type="radio" name="vroeg_di" value="ja"></td><td><input type="radio" name="vroeg_di" value="nee"></td></tr>
+            <tr><td>Woensdag</td><td><input type="radio" name="vroeg_wo" value="ja"></td><td><input type="radio" name="vroeg_wo" value="nee"></td></tr>
+            <tr><td>Donderdag</td><td><input type="radio" name="vroeg_do" value="ja"></td><td><input type="radio" name="vroeg_do" value="nee"></td></tr>
+            <tr><td>Vrijdag</td><td><input type="radio" name="vroeg_vr" value="ja"></td><td><input type="radio" name="vroeg_vr" value="nee"></td></tr>
+          </tbody>
+        </table>
+        <div class="error" id="err-vroeg">Beantwoord alle dagen.</div>
+      </div>
+
+      <!-- Zaterdag -->
+      <div class="card">
+        <label class="field-label">Ik wil ook coach op zaterdag zijn <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="zaterdag" value="ja"> Ja</label>
+          <label><input type="radio" name="zaterdag" value="nee"> Nee</label>
+        </div>
+        <div class="error" id="err-zaterdag">Maak een keuze.</div>
+      </div>
+
+      <!-- Zaalseizoen -->
+      <div class="card">
+        <label class="field-label">Ik draai ook mee in het zaalseizoen <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="zaal" value="ja"> Ja</label>
+          <label><input type="radio" name="zaal" value="nee"> Nee</label>
+        </div>
+        <div class="error" id="err-zaal">Maak een keuze.</div>
+      </div>
+
+      <!-- Ervaring — nu verplicht -->
+      <div class="card">
+        <label class="field-label">Het aantal jaren hockeyervaring als trainer/coach <span class="required">*</span></label>
+        <input type="number" id="ervaring" placeholder="Bv. 5" min="0" max="60" style="width:120px">
+        <div class="error" id="err-ervaring">Vul je ervaring in.</div>
+      </div>
+
+      <!-- Diploma bezit — Ja/Nee grid per niveau (checkboxes) -->
+      <div class="card">
+        <label class="field-label">Ik beschik over een Hockeytrainer diploma <span class="required">*</span></label>
+        <table class="grid-table">
+          <thead><tr><th style="text-align:left"></th><th>Ja</th><th>Nee</th></tr></thead>
+          <tbody>
+            <tr><td>HT1</td><td><input type="checkbox" name="diploma_ht1_ja" id="diploma_ht1_ja"></td><td><input type="checkbox" name="diploma_ht1_nee" id="diploma_ht1_nee"></td></tr>
+            <tr><td>HT2</td><td><input type="checkbox" name="diploma_ht2_ja" id="diploma_ht2_ja"></td><td><input type="checkbox" name="diploma_ht2_nee" id="diploma_ht2_nee"></td></tr>
+            <tr><td>HT3</td><td><input type="checkbox" name="diploma_ht3_ja" id="diploma_ht3_ja"></td><td><input type="checkbox" name="diploma_ht3_nee" id="diploma_ht3_nee"></td></tr>
+          </tbody>
+        </table>
+        <div class="error" id="err-diploma">Vul voor elk niveau Ja of Nee in.</div>
+      </div>
+
+      <!-- Opleiding interesse — Ja/Nee grid per niveau (radio) -->
+      <div class="card">
+        <label class="field-label">Ik zou graag de volgende hockeyopleiding willen volgen <span class="required">*</span></label>
+        <table class="grid-table">
+          <thead><tr><th style="text-align:left"></th><th>Ja</th><th>Nee</th></tr></thead>
+          <tbody>
+            <tr><td>HT1</td><td><input type="radio" name="opleiding_ht1" value="ja"></td><td><input type="radio" name="opleiding_ht1" value="nee"></td></tr>
+            <tr><td>HT2</td><td><input type="radio" name="opleiding_ht2" value="ja"></td><td><input type="radio" name="opleiding_ht2" value="nee"></td></tr>
+            <tr><td>HT3</td><td><input type="radio" name="opleiding_ht3" value="ja"></td><td><input type="radio" name="opleiding_ht3" value="nee"></td></tr>
+          </tbody>
+        </table>
+        <div class="error" id="err-opleiding">Beantwoord alle niveaus.</div>
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">Formulier versturen</button>
+    </div>
+
+    <!-- Succes -->
+    <div class="success-card" id="success-card">
+      <div class="success-icon">✅</div>
+      <h3>Bedankt voor je inzending!</h3>
+      <p>Je gegevens zijn opgeslagen. De technische commissie van MHC Rosmalen neemt contact met je op.</p>
+      <a href="index.html" class="back-home">← Terug naar overzicht</a>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getDatabase, ref, get, push, goOffline, goOnline } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
+      authDomain: "mhcrosmalen-a09a0.firebaseapp.com",
+      databaseURL: "https://mhcrosmalen-a09a0-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mhcrosmalen-a09a0",
+      storageBucket: "mhcrosmalen-a09a0.firebasestorage.app",
+      messagingSenderId: "396855295814",
+      appId: "1:396855295814:web:28dd001dcdad4dc861af47"
+    });
+
+    const db = getDatabase(app);
+    let activeSeizoensKey = null;
+
+    // Laad seizoen config
+    try {
+      goOffline(db); goOnline(db);
+      const snap = await get(ref(db, 'seizoen_config'));
+      const config = snap.val();
+      if (!config || !config.actief_seizoen) {
+        document.getElementById('gesloten-card').style.display = 'block';
+        document.getElementById('gesloten-text').textContent = 'Er is momenteel geen actief seizoen. Neem contact op met de technische commissie.';
+      } else if (!config.formulier_open) {
+        document.getElementById('gesloten-card').style.display = 'block';
+        if (config.naam) document.getElementById('gesloten-text').textContent = `De inschrijving voor ${config.naam} is momenteel gesloten. Neem contact op met de technische commissie.`;
+      } else {
+        activeSeizoensKey = config.actief_seizoen;
+        document.getElementById('seizoen-titel').textContent = config.naam || '';
+        document.getElementById('form-wrap').style.display = 'block';
+      }
+    } catch(e) {
+      document.getElementById('gesloten-card').style.display = 'block';
+      console.error(e);
+    }
+
+    function getChecked(name) {
+      return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
+    }
+    function showErr(id, show) {
+      document.getElementById(id).style.display = show ? 'block' : 'none';
+    }
+
+    window.submitForm = async function() {
+      if (!activeSeizoensKey) return;
+      let valid = true;
+
+      const email = document.getElementById('email').value.trim();
+      const naam = document.getElementById('naam').value.trim();
+      const adres = document.getElementById('adres').value.trim();
+      const telefoon = document.getElementById('telefoon').value.trim();
+      const teams = document.getElementById('teams').value.trim();
+      const freq = document.querySelector('input[name="freq"]:checked')?.value;
+      const voorkeursdagen = getChecked('voorkeursdag');
+      const zaterdag = document.querySelector('input[name="zaterdag"]:checked')?.value;
+      const zaal = document.querySelector('input[name="zaal"]:checked')?.value;
+      const ervaring = document.getElementById('ervaring').value.trim();
+
+      // Vroeg training: Ja/Nee per dag
+      const vroegDagen = ['ma','di','wo','do','vr'];
+      const vroegNamen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag'];
+      const vroegResultaat = {};
+      let vroegCompleet = true;
+      vroegDagen.forEach((dag, i) => {
+        const val = document.querySelector(`input[name="vroeg_${dag}"]:checked`)?.value;
+        if (!val) vroegCompleet = false;
+        vroegResultaat[vroegNamen[i]] = val || null;
+      });
+
+      // Diploma: Ja/Nee via checkboxes per niveau
+      const diplomaNiveaus = ['ht1','ht2','ht3'];
+      const diplomaResultaat = {};
+      let diplomaCompleet = true;
+      diplomaNiveaus.forEach(ht => {
+        const ja = document.getElementById(`diploma_${ht}_ja`)?.checked;
+        const nee = document.getElementById(`diploma_${ht}_nee`)?.checked;
+        if (!ja && !nee) diplomaCompleet = false;
+        diplomaResultaat[ht.toUpperCase()] = ja ? 'ja' : nee ? 'nee' : null;
+      });
+
+      // Opleiding: Ja/Nee per niveau (radio)
+      const opleidingResultaat = {};
+      let opleidingCompleet = true;
+      diplomaNiveaus.forEach(ht => {
+        const val = document.querySelector(`input[name="opleiding_${ht}"]:checked`)?.value;
+        if (!val) opleidingCompleet = false;
+        opleidingResultaat[ht.toUpperCase()] = val || null;
+      });
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      showErr('err-email', !emailOk); if (!emailOk) valid = false;
+      showErr('err-naam', !naam); if (!naam) valid = false;
+      showErr('err-adres', !adres); if (!adres) valid = false;
+      showErr('err-telefoon', !telefoon); if (!telefoon) valid = false;
+      showErr('err-teams', !teams); if (!teams) valid = false;
+      showErr('err-freq', !freq); if (!freq) valid = false;
+      showErr('err-voorkeursdag', voorkeursdagen.length === 0); if (!voorkeursdagen.length) valid = false;
+      showErr('err-vroeg', !vroegCompleet); if (!vroegCompleet) valid = false;
+      showErr('err-zaterdag', !zaterdag); if (!zaterdag) valid = false;
+      showErr('err-zaal', !zaal); if (!zaal) valid = false;
+      showErr('err-ervaring', !ervaring); if (!ervaring) valid = false;
+      showErr('err-diploma', !diplomaCompleet); if (!diplomaCompleet) valid = false;
+      showErr('err-opleiding', !opleidingCompleet); if (!opleidingCompleet) valid = false;
+
+      if (!valid) { document.querySelector('.error[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = 'Versturen...';
+
+      try {
+        await push(ref(db, activeSeizoensKey), {
+          email, naam, adres, telefoon, teams,
+          training_frequentie: freq,
+          voorkeursdagen,
+          vroeg_training_17u: vroegResultaat,
+          coach_zaterdag: zaterdag,
+          zaalseizoen: zaal,
+          ervaring_jaren: ervaring,
+          diploma: diplomaResultaat,
+          opleiding_interesse: opleidingResultaat,
+          timestamp: new Date().toISOString()
+        });
+          timestamp: new Date().toISOString()
+        });
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('success-card').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch(e) {
+        btn.disabled = false; btn.textContent = 'Formulier versturen';
+        alert('Er is een fout opgetreden. Probeer het opnieuw.');
+        console.error(e);
+      }
+    };
+  </script>
+</body>
+</html>
