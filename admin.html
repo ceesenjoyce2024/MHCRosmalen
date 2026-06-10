@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TC Beheer – MHC Rosmalen</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -197,7 +200,7 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, get, set, update } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, goOffline, goOnline } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
     const app = initializeApp({
@@ -248,6 +251,7 @@
     }
 
     async function laadConfig() {
+      goOffline(db); goOnline(db);
       const snap = await get(ref(db, 'seizoen_config'));
       const config = snap.val() || {};
       document.getElementById('actief-naam').textContent = config.naam || 'Geen seizoen actief';
@@ -305,6 +309,7 @@
 
     window.loadInzendingen = async function() {
       if (!huidigSeizoenKey) return;
+      goOffline(db); goOnline(db);
       const snap = await get(ref(db, huidigSeizoenKey));
       const data = snap.val() || {};
       allInzendingen = Object.values(data);
