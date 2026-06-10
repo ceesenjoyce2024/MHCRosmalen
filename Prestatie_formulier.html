@@ -223,7 +223,7 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, get, push, goOffline, goOnline } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getDatabase, ref, get, push, query } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
@@ -240,8 +240,7 @@
 
     // Laad seizoen config
     try {
-      goOffline(db); goOnline(db);
-      const snap = await get(ref(db, 'seizoen_config'));
+      const snap = await get(query(ref(db, 'seizoen_config')));
       const config = snap.val();
       if (!config || !config.actief_seizoen) {
         document.getElementById('gesloten-card').style.display = 'block';
@@ -256,6 +255,7 @@
       }
     } catch(e) {
       document.getElementById('gesloten-card').style.display = 'block';
+      document.getElementById('gesloten-text').textContent = `Fout bij laden: ${e.message}. Probeer de pagina te vernieuwen of neem contact op met de TC.`;
       console.error(e);
     }
 
