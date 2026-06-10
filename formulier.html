@@ -3,205 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventarisatie prestatieteam 2026-2027 – MHC Rosmalen</title>
+  <title>Inventarisatie prestatieteam – MHC Rosmalen</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy: #0E2A5A;
-      --gold: #F5A800;
-      --gold-dark: #C98A00;
-      --white: #ffffff;
-      --gray-100: #F4F5F7;
-      --gray-200: #E5E7EB;
-      --gray-300: #D1D5DB;
-      --gray-500: #6B7280;
-      --danger: #DC2626;
-      --success: #16A34A;
-      --radius: 12px;
+      --navy: #0E2A5A; --gold: #F5A800; --gold-dark: #C98A00;
+      --white: #fff; --gray-100: #F4F5F7; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-500: #6B7280;
+      --danger: #DC2626; --radius: 12px;
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--gray-100);
-      color: var(--navy);
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--navy);
-      padding: 1.25rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--navy); min-height: 100vh; }
+    header { background: var(--navy); padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
     header img { width: 44px; height: 44px; object-fit: contain; }
-
-    header a { text-decoration: none; display: flex; align-items: center; gap: 1rem; }
-
     header h1 { color: var(--white); font-size: 1.1rem; font-weight: 600; line-height: 1.2; }
     header span { color: var(--gold); display: block; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      margin-left: auto;
-      transition: color 0.1s;
-    }
+    .back-link { margin-left: auto; font-size: 0.875rem; color: rgba(255,255,255,0.7); text-decoration: none; }
     .back-link:hover { color: var(--white); }
-
-    main {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
-    }
-
-    .form-header {
-      background: var(--white);
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-300);
-      border-top: 4px solid var(--gold);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
+    main { max-width: 640px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    .form-header { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); border-top: 4px solid var(--gold); padding: 1.5rem; margin-bottom: 1rem; }
     .form-header h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: .4rem; }
     .form-header p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
-
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-300);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: .75rem;
-    }
-
-    label.field-label {
-      display: block;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      margin-bottom: .6rem;
-    }
-
+    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; margin-bottom: .75rem; }
+    label.field-label { display: block; font-size: 0.9375rem; font-weight: 500; margin-bottom: .6rem; }
     .required { color: var(--danger); }
-
-    .hint {
-      font-size: 0.8125rem;
-      color: var(--gray-500);
-      margin-bottom: .75rem;
-      margin-top: -.25rem;
-      line-height: 1.4;
-    }
-
-    input[type=text], input[type=email], input[type=number] {
-      width: 100%;
-      padding: 9px 12px;
-      font-family: inherit;
-      font-size: 0.9375rem;
-      border: 1px solid var(--gray-300);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--navy);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    input[type=text]:focus, input[type=email]:focus, input[type=number]:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(245,168,0,0.15);
-    }
-
+    .hint { font-size: 0.8125rem; color: var(--gray-500); margin-bottom: .75rem; margin-top: -.25rem; line-height: 1.4; }
+    input[type=text], input[type=email], input[type=number] { width: 100%; padding: 9px 12px; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--white); color: var(--navy); outline: none; transition: border-color 0.15s; }
+    input[type=text]:focus, input[type=email]:focus, input[type=number]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,168,0,0.15); }
     .grid-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
     .grid-table th { font-weight: 500; padding: 6px 4px; text-align: center; color: var(--gray-500); font-size: 0.8125rem; }
     .grid-table td { padding: 8px 4px; text-align: center; border-top: 1px solid var(--gray-200); }
-    .grid-table td:first-child { text-align: left; font-size: 0.875rem; padding-left: 0; }
+    .grid-table td:first-child { text-align: left; padding-left: 0; }
     .grid-table tr:hover td { background: var(--gray-100); }
-
-    input[type=checkbox], input[type=radio] {
-      width: 16px; height: 16px;
-      accent-color: var(--gold-dark);
-      cursor: pointer;
-    }
-
-    .days-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-
-    .day-check {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.875rem;
-      font-weight: 400;
-      cursor: pointer;
-    }
-
+    input[type=checkbox], input[type=radio] { width: 16px; height: 16px; accent-color: var(--gold-dark); cursor: pointer; }
+    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .day-check { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; cursor: pointer; }
     .radio-group { display: flex; flex-direction: column; gap: .5rem; }
-    .radio-group label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; font-weight: 400; cursor: pointer; }
-
+    .radio-group label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; cursor: pointer; }
     .diploma-row { display: flex; gap: 1.5rem; }
-    .diploma-row label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; font-weight: 400; cursor: pointer; }
-
+    .diploma-row label { display: flex; align-items: center; gap: .5rem; font-size: 0.9375rem; cursor: pointer; }
     .error { font-size: 0.8125rem; color: var(--danger); margin-top: .4rem; display: none; }
-
-    .submit-btn {
-      width: 100%;
-      padding: 13px;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 600;
-      background: var(--navy);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      margin-top: .25rem;
-    }
-
+    .submit-btn { width: 100%; padding: 13px; font-family: inherit; font-size: 1rem; font-weight: 600; background: var(--navy); color: var(--white); border: none; border-radius: var(--radius); cursor: pointer; transition: background 0.15s; margin-top: .25rem; }
     .submit-btn:hover { background: #0a1f45; }
-    .submit-btn:active { transform: scale(0.99); }
     .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
-
-    .success-card {
-      background: var(--white);
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-300);
-      padding: 3rem 1.5rem;
-      text-align: center;
-      display: none;
-    }
-
+    .success-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 3rem 1.5rem; text-align: center; display: none; }
     .success-icon { font-size: 3rem; margin-bottom: 1rem; }
     .success-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: .5rem; }
     .success-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
-
-    .back-home {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 10px 20px;
-      background: var(--navy);
-      color: var(--white);
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
+    .back-home { display: inline-block; margin-top: 1.5rem; padding: 10px 20px; background: var(--navy); color: var(--white); border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .gesloten-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); border-top: 4px solid var(--danger); padding: 2.5rem 1.5rem; text-align: center; display: none; }
+    .gesloten-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: .5rem; }
+    .gesloten-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
   </style>
 </head>
 <body>
-
   <header>
-    <a href="index.html">
+    <a href="index.html" style="display:flex;align-items:center;gap:1rem;text-decoration:none">
       <img src="logo_mhcrosmalen.gif" alt="Logo MHC Rosmalen">
       <div>
         <h1>MHC Rosmalen</h1>
@@ -212,77 +70,58 @@
   </header>
 
   <main>
-    <div id="form-wrap">
+    <!-- Gesloten melding -->
+    <div class="gesloten-card" id="gesloten-card">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+      <h3>Inschrijving gesloten</h3>
+      <p id="gesloten-text">De inschrijving voor dit seizoen is momenteel gesloten. Neem contact op met de technische commissie voor meer informatie.</p>
+      <a href="index.html" class="back-home">← Terug naar overzicht</a>
+    </div>
+
+    <!-- Formulier -->
+    <div id="form-wrap" style="display:none">
       <div class="form-header">
-        <h2>Inventarisatie prestatieteam 2026-2027</h2>
+        <h2>Inventarisatie <span id="seizoen-titel"></span></h2>
         <p>In dit formulier doen we uitvraag naar trainingsdagen en wensen voor het aankomend seizoen. Velden met <span class="required">*</span> zijn verplicht.</p>
       </div>
 
-      <!-- Persoonsgegevens -->
       <div class="card">
         <label class="field-label">E-mailadres <span class="required">*</span></label>
         <input type="email" id="email" placeholder="jouw@email.nl" autocomplete="email">
         <div class="error" id="err-email">Vul een geldig e-mailadres in.</div>
       </div>
-
       <div class="card">
         <label class="field-label">Mijn naam is <span class="required">*</span></label>
         <input type="text" id="naam" placeholder="Voor- en achternaam" autocomplete="name">
         <div class="error" id="err-naam">Vul je naam in.</div>
       </div>
-
       <div class="card">
         <label class="field-label">Mijn adres is <span class="required">*</span></label>
-        <input type="text" id="adres" placeholder="Straat, huisnummer, woonplaats" autocomplete="street-address">
+        <input type="text" id="adres" placeholder="Straat, huisnummer, woonplaats">
         <div class="error" id="err-adres">Vul je adres in.</div>
       </div>
-
       <div class="card">
         <label class="field-label">Mijn telefoonnummer is <span class="required">*</span></label>
         <input type="text" id="telefoon" placeholder="06-12345678" autocomplete="tel">
         <div class="error" id="err-telefoon">Vul je telefoonnummer in.</div>
       </div>
-
       <div class="card">
         <label class="field-label">Komend seizoen zet ik mij in voor dit/deze team(s) <span class="required">*</span></label>
         <p class="hint">Meerdere teams? Scheid ze met een komma, bv. MO11-1, MO13-2</p>
         <input type="text" id="teams" placeholder="Bv. MO11-1, MO13-2">
         <div class="error" id="err-teams">Vul minimaal één team in.</div>
       </div>
-
-      <!-- Trainingsdagen -->
       <div class="card">
         <label class="field-label">Hoe vaak geef ik training en wat zijn mijn voorkeursdagen</label>
         <p class="hint">Meerdere dagen per frequentie aanvinken is mogelijk</p>
         <table class="grid-table">
-          <thead>
-            <tr>
-              <th style="text-align:left;"></th>
-              <th>Ma</th><th>Di</th><th>Wo</th><th>Do</th><th>Vr</th>
-            </tr>
-          </thead>
+          <thead><tr><th style="text-align:left"></th><th>Ma</th><th>Di</th><th>Wo</th><th>Do</th><th>Vr</th></tr></thead>
           <tbody>
-            <tr>
-              <td>1× per week</td>
-              <td><input type="checkbox" name="1x" value="ma"></td>
-              <td><input type="checkbox" name="1x" value="di"></td>
-              <td><input type="checkbox" name="1x" value="wo"></td>
-              <td><input type="checkbox" name="1x" value="do"></td>
-              <td><input type="checkbox" name="1x" value="vr"></td>
-            </tr>
-            <tr>
-              <td>2× per week</td>
-              <td><input type="checkbox" name="2x" value="ma"></td>
-              <td><input type="checkbox" name="2x" value="di"></td>
-              <td><input type="checkbox" name="2x" value="wo"></td>
-              <td><input type="checkbox" name="2x" value="do"></td>
-              <td><input type="checkbox" name="2x" value="vr"></td>
-            </tr>
+            <tr><td>1× per week</td><td><input type="checkbox" name="1x" value="ma"></td><td><input type="checkbox" name="1x" value="di"></td><td><input type="checkbox" name="1x" value="wo"></td><td><input type="checkbox" name="1x" value="do"></td><td><input type="checkbox" name="1x" value="vr"></td></tr>
+            <tr><td>2× per week</td><td><input type="checkbox" name="2x" value="ma"></td><td><input type="checkbox" name="2x" value="di"></td><td><input type="checkbox" name="2x" value="wo"></td><td><input type="checkbox" name="2x" value="do"></td><td><input type="checkbox" name="2x" value="vr"></td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Vroeg training -->
       <div class="card">
         <label class="field-label">Op welke dag(en) kun jij om 17:00 uur training geven? <span class="required">*</span></label>
         <p class="hint">Elke dag worden er vroeg trainingen ingedeeld. Iedereen zal wel eens vroeg moeten starten. Meerdere dagen mogelijk.</p>
@@ -295,8 +134,6 @@
         </div>
         <div class="error" id="err-vroeg">Selecteer minimaal één dag.</div>
       </div>
-
-      <!-- Zaterdag -->
       <div class="card">
         <label class="field-label">Ik ben ook coach op zaterdag <span class="required">*</span></label>
         <div class="radio-group">
@@ -305,8 +142,6 @@
         </div>
         <div class="error" id="err-zaterdag">Maak een keuze.</div>
       </div>
-
-      <!-- Zaalseizoen -->
       <div class="card">
         <label class="field-label">Ik draai ook het zaalseizoen <span class="required">*</span></label>
         <div class="radio-group">
@@ -315,14 +150,10 @@
         </div>
         <div class="error" id="err-zaal">Maak een keuze.</div>
       </div>
-
-      <!-- Ervaring -->
       <div class="card">
         <label class="field-label">Aantal jaren ervaring als hockeytrainer/coach</label>
         <input type="number" id="ervaring" placeholder="Bv. 5" min="0" max="60" style="width:120px">
       </div>
-
-      <!-- Diploma's -->
       <div class="card">
         <label class="field-label">Ik beschik over een hockeytrainer diploma</label>
         <p class="hint">Vink aan welke diploma('s) je hebt</p>
@@ -332,8 +163,6 @@
           <label><input type="checkbox" id="ht3"> HT3</label>
         </div>
       </div>
-
-      <!-- Opleiding -->
       <div class="card">
         <label class="field-label">Ik zou graag een hockeyopleiding willen volgen <span class="required">*</span></label>
         <div class="radio-group">
@@ -342,7 +171,6 @@
         </div>
         <div class="error" id="err-opleiding">Maak een keuze.</div>
       </div>
-
       <button class="submit-btn" id="submit-btn" onclick="submitForm()">Formulier versturen</button>
     </div>
 
@@ -350,14 +178,14 @@
     <div class="success-card" id="success-card">
       <div class="success-icon">✅</div>
       <h3>Bedankt voor je inzending!</h3>
-      <p>Je gegevens zijn opgeslagen. De technische commissie van MHC Rosmalen neemt contact met je op voor het seizoen 2026-2027.</p>
+      <p>Je gegevens zijn opgeslagen. De technische commissie van MHC Rosmalen neemt contact met je op.</p>
       <a href="index.html" class="back-home">← Terug naar overzicht</a>
     </div>
   </main>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getDatabase, ref, get, push } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
@@ -370,18 +198,38 @@
     });
 
     const db = getDatabase(app);
+    let activeSeizoensKey = null;
+
+    // Laad seizoen config
+    try {
+      const snap = await get(ref(db, 'seizoen_config'));
+      const config = snap.val();
+      if (!config || !config.actief_seizoen) {
+        document.getElementById('gesloten-card').style.display = 'block';
+        document.getElementById('gesloten-text').textContent = 'Er is momenteel geen actief seizoen. Neem contact op met de technische commissie.';
+      } else if (!config.formulier_open) {
+        document.getElementById('gesloten-card').style.display = 'block';
+        if (config.naam) document.getElementById('gesloten-text').textContent = `De inschrijving voor ${config.naam} is momenteel gesloten. Neem contact op met de technische commissie.`;
+      } else {
+        activeSeizoensKey = config.actief_seizoen;
+        document.getElementById('seizoen-titel').textContent = config.naam || '';
+        document.getElementById('form-wrap').style.display = 'block';
+      }
+    } catch(e) {
+      document.getElementById('gesloten-card').style.display = 'block';
+      console.error(e);
+    }
 
     function getChecked(name) {
       return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
     }
-
     function showErr(id, show) {
       document.getElementById(id).style.display = show ? 'block' : 'none';
     }
 
-    window.submitForm = async function () {
+    window.submitForm = async function() {
+      if (!activeSeizoensKey) return;
       let valid = true;
-
       const email = document.getElementById('email').value.trim();
       const naam = document.getElementById('naam').value.trim();
       const adres = document.getElementById('adres').value.trim();
@@ -403,43 +251,35 @@
       showErr('err-zaal', !zaal); if (!zaal) valid = false;
       showErr('err-opleiding', !opleiding); if (!opleiding) valid = false;
 
-      if (!valid) {
-        document.querySelector('.error[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
+      if (!valid) { document.querySelector('.error[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
 
       const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'Versturen...';
-
-      const data = {
-        email, naam, adres, telefoon, teams,
-        trainingsdagen_1x: getChecked('1x'),
-        trainingsdagen_2x: getChecked('2x'),
-        vroeg_training: vroeg,
-        coach_zaterdag: zaterdag,
-        zaalseizoen: zaal,
-        ervaring_jaren: document.getElementById('ervaring').value || null,
-        diploma_ht1: document.getElementById('ht1').checked,
-        diploma_ht2: document.getElementById('ht2').checked,
-        diploma_ht3: document.getElementById('ht3').checked,
-        opleiding_interesse: opleiding,
-        timestamp: new Date().toISOString()
-      };
+      btn.disabled = true; btn.textContent = 'Versturen...';
 
       try {
-        await push(ref(db, 'prestatieteam_2026_2027'), data);
+        await push(ref(db, activeSeizoensKey), {
+          email, naam, adres, telefoon, teams,
+          trainingsdagen_1x: getChecked('1x'),
+          trainingsdagen_2x: getChecked('2x'),
+          vroeg_training: vroeg,
+          coach_zaterdag: zaterdag,
+          zaalseizoen: zaal,
+          ervaring_jaren: document.getElementById('ervaring').value || null,
+          diploma_ht1: document.getElementById('ht1').checked,
+          diploma_ht2: document.getElementById('ht2').checked,
+          diploma_ht3: document.getElementById('ht3').checked,
+          opleiding_interesse: opleiding,
+          timestamp: new Date().toISOString()
+        });
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('success-card').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (e) {
-        btn.disabled = false;
-        btn.textContent = 'Formulier versturen';
-        alert('Er is een fout opgetreden. Controleer je verbinding en probeer het opnieuw.');
+      } catch(e) {
+        btn.disabled = false; btn.textContent = 'Formulier versturen';
+        alert('Er is een fout opgetreden. Probeer het opnieuw.');
         console.error(e);
       }
     };
   </script>
-
 </body>
 </html>

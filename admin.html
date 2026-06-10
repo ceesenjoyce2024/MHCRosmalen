@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TC Beheer – MHC Rosmalen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0E2A5A; --gold: #F5A800; --gold-dark: #C98A00;
+      --white: #fff; --gray-100: #F4F5F7; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-500: #6B7280; --gray-700: #374151;
+      --danger: #DC2626; --success: #16A34A; --radius: 12px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--navy); min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .login-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 2.5rem 2rem; width: 100%; max-width: 380px; text-align: center; }
+    .login-card img { width: 72px; margin-bottom: 1rem; }
+    .login-card h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: .25rem; }
+    .login-card p { font-size: 0.875rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+    .login-card input { width: 100%; padding: 10px 12px; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: .75rem; outline: none; color: var(--navy); }
+    .login-card input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,168,0,0.15); }
+    .login-btn { width: 100%; padding: 11px; font-family: inherit; font-size: 1rem; font-weight: 600; background: var(--navy); color: var(--white); border: none; border-radius: 8px; cursor: pointer; }
+    .login-btn:hover { background: #0a1f45; }
+    .login-error { font-size: 0.8125rem; color: var(--danger); margin-top: .5rem; display: none; }
+
+    /* APP */
+    #app-screen { display: none; }
+    header { background: var(--navy); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    header img { width: 40px; height: 40px; object-fit: contain; }
+    header h1 { color: var(--white); font-size: 1rem; font-weight: 600; }
+    header span { color: var(--gold); display: block; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+    .header-actions { margin-left: auto; display: flex; gap: 1rem; align-items: center; }
+    .header-user { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+    .logout-btn { font-size: 0.8rem; color: rgba(255,255,255,0.7); background: none; border: 1px solid rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+    .logout-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.5); }
+
+    main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* SECTIE HEADERS */
+    .section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin: 2rem 0 .75rem; }
+
+    /* CARDS */
+    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; margin-bottom: .75rem; }
+    .card-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* SEIZOEN WIDGET */
+    .seizoen-widget { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:600px) { .seizoen-widget { grid-template-columns: 1fr; } }
+
+    .seizoen-actief { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; }
+    .seizoen-actief h3 { font-size: 0.8125rem; font-weight: 500; color: var(--gray-500); margin-bottom: .25rem; }
+    .seizoen-naam { font-size: 1.4rem; font-weight: 600; margin-bottom: .75rem; }
+
+    .toggle-wrap { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+    .toggle-label { font-size: 0.875rem; }
+    .toggle { position: relative; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: var(--gray-300); border-radius: 24px; cursor: pointer; transition: background .2s; }
+    .slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: var(--white); border-radius: 50%; transition: transform .2s; }
+    .toggle input:checked + .slider { background: var(--success); }
+    .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+    .nieuw-seizoen { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; }
+    .nieuw-seizoen h3 { font-size: 0.8125rem; font-weight: 500; color: var(--gray-500); margin-bottom: .75rem; }
+    .nieuw-seizoen input { width: 100%; padding: 9px 12px; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: .75rem; outline: none; color: var(--navy); }
+    .nieuw-seizoen input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,168,0,0.15); }
+
+    /* BUTTONS */
+    .btn { padding: 8px 16px; font-family: inherit; font-size: 0.875rem; font-weight: 500; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: background .15s, border-color .15s; }
+    .btn-primary { background: var(--navy); color: var(--white); }
+    .btn-primary:hover { background: #0a1f45; }
+    .btn-secondary { background: var(--white); color: var(--navy); border-color: var(--gray-300); }
+    .btn-secondary:hover { background: var(--gray-100); }
+    .btn-danger { background: var(--white); color: var(--danger); border-color: #FECACA; }
+    .btn-danger:hover { background: #FEF2F2; }
+    .btn-success { background: #DCFCE7; color: var(--success); border-color: #BBF7D0; }
+    .btn-success:hover { background: #BBF7D0; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* STATISTIEKEN */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+    .stat-card { background: var(--gray-100); border-radius: 8px; padding: .875rem 1rem; }
+    .stat-label { font-size: 0.75rem; color: var(--gray-500); margin-bottom: .25rem; }
+    .stat-value { font-size: 1.5rem; font-weight: 600; }
+
+    /* TABEL */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; min-width: 700px; }
+    th { text-align: left; padding: 8px 12px; background: var(--gray-100); font-weight: 500; color: var(--gray-700); border-bottom: 1px solid var(--gray-200); font-size: 0.75rem; text-transform: uppercase; letter-spacing: .04em; }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-100); }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+    .tag-ja { background: #DCFCE7; color: #166534; }
+    .tag-nee { background: var(--gray-100); color: var(--gray-500); }
+
+    /* SEIZOEN SELECTOR */
+    select { padding: 8px 12px; font-family: inherit; font-size: 0.875rem; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--white); color: var(--navy); outline: none; cursor: pointer; }
+    select:focus { border-color: var(--gold); }
+
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-500); font-size: 0.9rem; }
+
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--navy); color: var(--white); padding: .75rem 1.25rem; border-radius: 8px; font-size: 0.875rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 99; }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-card">
+      <img src="logo_mhcrosmalen.gif" alt="Logo MHC Rosmalen">
+      <h2>TC Beheer</h2>
+      <p>Inloggen met je MHC Rosmalen TC-account</p>
+      <input type="email" id="login-email" placeholder="E-mailadres" autocomplete="email">
+      <input type="password" id="login-pw" placeholder="Wachtwoord" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+      <button class="login-btn" onclick="doLogin()">Inloggen</button>
+      <div class="login-error" id="login-error">Onjuist e-mailadres of wachtwoord.</div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app-screen">
+    <header>
+      <img src="logo_mhcrosmalen.gif" alt="Logo MHC Rosmalen">
+      <div>
+        <h1>MHC Rosmalen</h1>
+        <span>TC Beheer</span>
+      </div>
+      <div class="header-actions">
+        <span class="header-user" id="header-user"></span>
+        <button class="logout-btn" onclick="doLogout()">Uitloggen</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- SEIZOEN BEHEER -->
+      <div class="section-title">Seizoen beheer</div>
+      <div class="seizoen-widget">
+
+        <div class="seizoen-actief">
+          <h3>Actief seizoen</h3>
+          <div class="seizoen-naam" id="actief-naam">Geen seizoen actief</div>
+
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" id="formulier-toggle" onchange="toggleFormulier(this.checked)">
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label" id="toggle-label">Formulier gesloten</span>
+          </div>
+
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <select id="seizoen-select" onchange="wisselSeizoen(this.value)" style="flex:1;min-width:140px">
+              <option value="">— selecteer seizoen —</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadInzendingen()">↻ Vernieuwen</button>
+          </div>
+        </div>
+
+        <div class="nieuw-seizoen">
+          <h3>Nieuw seizoen aanmaken</h3>
+          <input type="text" id="nieuw-naam" placeholder="Naam, bv. Seizoen 2027-2028">
+          <input type="text" id="nieuw-key" placeholder="Sleutel, bv. prestatieteam_2027_2028">
+          <button class="btn btn-primary" onclick="maakSeizoen()" style="width:100%">Seizoen aanmaken</button>
+        </div>
+      </div>
+
+      <!-- INZENDINGEN -->
+      <div class="section-title">Inzendingen</div>
+      <div class="card">
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card"><div class="stat-label">Totaal inzendingen</div><div class="stat-value" id="stat-totaal">—</div></div>
+          <div class="stat-card"><div class="stat-label">Coacht op zaterdag</div><div class="stat-value" id="stat-zat">—</div></div>
+          <div class="stat-card"><div class="stat-label">Draait zaalseizoen</div><div class="stat-value" id="stat-zaal">—</div></div>
+          <div class="stat-card"><div class="stat-label">Interesse opleiding</div><div class="stat-value" id="stat-opl">—</div></div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-bottom:.75rem">
+          <button class="btn btn-secondary" onclick="exportCSV()">⬇ Exporteer CSV</button>
+        </div>
+
+        <div class="table-wrap" id="table-wrap">
+          <div class="empty-state">Selecteer een seizoen om inzendingen te bekijken.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getDatabase, ref, get, set, update } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
+      authDomain: "mhcrosmalen-a09a0.firebaseapp.com",
+      databaseURL: "https://mhcrosmalen-a09a0-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mhcrosmalen-a09a0",
+      storageBucket: "mhcrosmalen-a09a0.firebasestorage.app",
+      messagingSenderId: "396855295814",
+      appId: "1:396855295814:web:28dd001dcdad4dc861af47"
+    });
+
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    let allInzendingen = [];
+    let huidigSeizoenKey = null;
+
+    // AUTH STATE
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'block';
+        document.getElementById('header-user').textContent = user.email;
+        initApp();
+      } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-screen').style.display = 'none';
+      }
+    });
+
+    window.doLogin = async function() {
+      const email = document.getElementById('login-email').value.trim();
+      const pw = document.getElementById('login-pw').value;
+      const errEl = document.getElementById('login-error');
+      errEl.style.display = 'none';
+      try {
+        await signInWithEmailAndPassword(auth, email, pw);
+      } catch(e) {
+        errEl.style.display = 'block';
+      }
+    };
+
+    window.doLogout = () => signOut(auth);
+
+    async function initApp() {
+      await laadConfig();
+      await laadSeizoenen();
+    }
+
+    async function laadConfig() {
+      const snap = await get(ref(db, 'seizoen_config'));
+      const config = snap.val() || {};
+      document.getElementById('actief-naam').textContent = config.naam || 'Geen seizoen actief';
+      const toggle = document.getElementById('formulier-toggle');
+      toggle.checked = config.formulier_open === true;
+      document.getElementById('toggle-label').textContent = toggle.checked ? 'Formulier open' : 'Formulier gesloten';
+      huidigSeizoenKey = config.actief_seizoen || null;
+      if (huidigSeizoenKey) {
+        document.getElementById('seizoen-select').value = huidigSeizoenKey;
+        await loadInzendingen();
+      }
+    }
+
+    async function laadSeizoenen() {
+      const snap = await get(ref(db, 'seizoen_config/seizoenen'));
+      const seizoenen = snap.val() || {};
+      const sel = document.getElementById('seizoen-select');
+      sel.innerHTML = '<option value="">— selecteer seizoen —</option>';
+      Object.entries(seizoenen).forEach(([key, naam]) => {
+        const opt = document.createElement('option');
+        opt.value = key; opt.textContent = naam;
+        sel.appendChild(opt);
+      });
+      if (huidigSeizoenKey) sel.value = huidigSeizoenKey;
+    }
+
+    window.toggleFormulier = async function(open) {
+      document.getElementById('toggle-label').textContent = open ? 'Formulier open' : 'Formulier gesloten';
+      await update(ref(db, 'seizoen_config'), { formulier_open: open });
+      showToast(open ? 'Formulier is nu open' : 'Formulier is nu gesloten');
+    };
+
+    window.wisselSeizoen = async function(key) {
+      if (!key) return;
+      huidigSeizoenKey = key;
+      const sel = document.getElementById('seizoen-select');
+      const naam = sel.options[sel.selectedIndex].text;
+      await update(ref(db, 'seizoen_config'), { actief_seizoen: key, naam });
+      document.getElementById('actief-naam').textContent = naam;
+      showToast(`Actief seizoen: ${naam}`);
+      await loadInzendingen();
+    };
+
+    window.maakSeizoen = async function() {
+      const naam = document.getElementById('nieuw-naam').value.trim();
+      const key = document.getElementById('nieuw-key').value.trim();
+      if (!naam || !key) { alert('Vul zowel naam als sleutel in.'); return; }
+      if (!/^[a-zA-Z0-9_]+$/.test(key)) { alert('Sleutel mag alleen letters, cijfers en underscores bevatten.'); return; }
+      await update(ref(db, `seizoen_config/seizoenen`), { [key]: naam });
+      document.getElementById('nieuw-naam').value = '';
+      document.getElementById('nieuw-key').value = '';
+      await laadSeizoenen();
+      showToast(`Seizoen "${naam}" aangemaakt`);
+    };
+
+    window.loadInzendingen = async function() {
+      if (!huidigSeizoenKey) return;
+      const snap = await get(ref(db, huidigSeizoenKey));
+      const data = snap.val() || {};
+      allInzendingen = Object.values(data);
+      renderTabel(allInzendingen);
+      renderStats(allInzendingen);
+    };
+
+    function renderStats(data) {
+      document.getElementById('stat-totaal').textContent = data.length;
+      document.getElementById('stat-zat').textContent = data.filter(r => r.coach_zaterdag === 'ja').length;
+      document.getElementById('stat-zaal').textContent = data.filter(r => r.zaalseizoen === 'ja').length;
+      document.getElementById('stat-opl').textContent = data.filter(r => r.opleiding_interesse === 'ja').length;
+    }
+
+    function renderTabel(data) {
+      const wrap = document.getElementById('table-wrap');
+      if (!data.length) {
+        wrap.innerHTML = '<div class="empty-state">Geen inzendingen gevonden voor dit seizoen.</div>';
+        return;
+      }
+      const rows = data.map(r => `
+        <tr>
+          <td><strong>${r.naam || '—'}</strong><br><span style="color:var(--gray-500);font-size:.75rem">${r.email || ''}</span></td>
+          <td>${r.teams || '—'}</td>
+          <td>
+            ${r.trainingsdagen_1x?.length ? `1×: ${r.trainingsdagen_1x.join(', ')}` : ''}
+            ${r.trainingsdagen_1x?.length && r.trainingsdagen_2x?.length ? '<br>' : ''}
+            ${r.trainingsdagen_2x?.length ? `2×: ${r.trainingsdagen_2x.join(', ')}` : ''}
+          </td>
+          <td>${r.vroeg_training?.join(', ') || '—'}</td>
+          <td><span class="tag ${r.coach_zaterdag === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.coach_zaterdag || '—'}</span></td>
+          <td><span class="tag ${r.zaalseizoen === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.zaalseizoen || '—'}</span></td>
+          <td>
+            ${r.diploma_ht1 ? 'HT1 ' : ''}${r.diploma_ht2 ? 'HT2 ' : ''}${r.diploma_ht3 ? 'HT3' : ''}
+            ${!r.diploma_ht1 && !r.diploma_ht2 && !r.diploma_ht3 ? '—' : ''}
+          </td>
+          <td><span class="tag ${r.opleiding_interesse === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.opleiding_interesse || '—'}</span></td>
+        </tr>
+      `).join('');
+
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Naam</th><th>Teams</th><th>Trainingsdagen</th>
+              <th>Vroeg (17u)</th><th>Zaterdag</th><th>Zaal</th>
+              <th>Diploma</th><th>Opleiding</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    window.exportCSV = function() {
+      if (!allInzendingen.length) { alert('Geen inzendingen om te exporteren.'); return; }
+      const headers = ['Naam','Email','Adres','Telefoon','Teams','1x-dagen','2x-dagen','Vroeg 17u','Zaterdag','Zaalseizoen','Ervaring (jr)','HT1','HT2','HT3','Opleiding','Datum'];
+      const rows = allInzendingen.map(r => [
+        r.naam||'', r.email||'', r.adres||'', r.telefoon||'', r.teams||'',
+        (r.trainingsdagen_1x||[]).join(';'),
+        (r.trainingsdagen_2x||[]).join(';'),
+        (r.vroeg_training||[]).join(';'),
+        r.coach_zaterdag||'', r.zaalseizoen||'', r.ervaring_jaren||'',
+        r.diploma_ht1?'ja':'nee', r.diploma_ht2?'ja':'nee', r.diploma_ht3?'ja':'nee',
+        r.opleiding_interesse||'',
+        r.timestamp ? new Date(r.timestamp).toLocaleDateString('nl-NL') : ''
+      ]);
+      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `inzendingen_${huidigSeizoenKey || 'export'}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV geëxporteerd');
+    };
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
