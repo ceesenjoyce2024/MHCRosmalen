@@ -321,7 +321,11 @@
       document.getElementById('stat-totaal').textContent = data.length;
       document.getElementById('stat-zat').textContent = data.filter(r => r.coach_zaterdag === 'ja').length;
       document.getElementById('stat-zaal').textContent = data.filter(r => r.zaalseizoen === 'ja').length;
-      document.getElementById('stat-opl').textContent = data.filter(r => r.opleiding_interesse === 'ja').length;
+      document.getElementById('stat-opl').textContent = data.filter(r => {
+        if (!r.opleiding_interesse) return false;
+        if (typeof r.opleiding_interesse === 'object') return Object.values(r.opleiding_interesse).some(v => v === 'ja');
+        return r.opleiding_interesse === 'ja';
+      }).length;
     }
 
     function renderTabel(data) {
@@ -330,55 +334,81 @@
         wrap.innerHTML = '<div class="empty-state">Geen inzendingen gevonden voor dit seizoen.</div>';
         return;
       }
+
+      const dagen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag'];
+      const dagKort = ['Ma','Di','Wo','Do','Vr'];
+
       const rows = data.map(r => {
-        // Vroeg: ondersteun zowel object {Dinsdag:'ja'} als array ['Dinsdag']
-        let vroeg = '—';
-        if (r.vroeg_training_17u) {
-          if (Array.isArray(r.vroeg_training_17u)) {
-            vroeg = r.vroeg_training_17u.join(', ') || '—';
-          } else if (typeof r.vroeg_training_17u === 'object') {
-            vroeg = Object.entries(r.vroeg_training_17u).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || '—';
+        // Voorkeursdagen cellen
+        const voorkeurCellen = dagen.map((dag, i) => {
+          const voorkeur = (r.voorkeursdagen || []).includes(dag);
+          return `<td style="text-align:center">${voorkeur ? `<span class="tag tag-ja">${dagKort[i]}</span>` : '<span style="color:var(--gray-300)">—</span>'}</td>`;
+        }).join('');
+
+        // Vroeg 17u cellen
+        const vroegCellen = dagen.map((dag, i) => {
+          let val = '—';
+          if (r.vroeg_training_17u && typeof r.vroeg_training_17u === 'object') {
+            val = r.vroeg_training_17u[dag] || 'nee';
+          } else if (Array.isArray(r.vroeg_training)) {
+            val = r.vroeg_training.includes(dag) ? 'ja' : 'nee';
           }
-        } else if (r.vroeg_training) {
-          // Oude data-structuur
-          vroeg = Array.isArray(r.vroeg_training) ? r.vroeg_training.join(', ') : r.vroeg_training || '—';
-        }
+          return `<td style="text-align:center">${val === 'ja' ? `<span class="tag tag-ja">${dagKort[i]}</span>` : '<span style="color:var(--gray-300)">—</span>'}</td>`;
+        }).join('');
 
-        // Diploma
-        let diploma = '—';
-        if (r.diploma && typeof r.diploma === 'object') {
-          diploma = Object.entries(r.diploma).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || '—';
-        }
+        // Diploma cellen HT1/HT2/HT3
+        const diplomaCellen = ['HT1','HT2','HT3'].map(ht => {
+          const val = r.diploma?.[ht];
+          return `<td style="text-align:center">${val === 'ja' ? '<span class="tag tag-ja">✓</span>' : '<span style="color:var(--gray-300)">—</span>'}</td>`;
+        }).join('');
 
-        // Opleiding: ondersteun zowel object {HT2:'ja'} als string 'ja'/'nee'
-        let opleiding = '—';
-        if (r.opleiding_interesse) {
-          if (typeof r.opleiding_interesse === 'object' && !Array.isArray(r.opleiding_interesse)) {
-            opleiding = Object.entries(r.opleiding_interesse).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || 'Nee';
+        // Opleiding cellen HT1/HT2/HT3
+        const opleidingCellen = ['HT1','HT2','HT3'].map(ht => {
+          let val = 'nee';
+          if (r.opleiding_interesse && typeof r.opleiding_interesse === 'object') {
+            val = r.opleiding_interesse[ht] || 'nee';
           } else if (typeof r.opleiding_interesse === 'string') {
-            opleiding = r.opleiding_interesse;
+            val = r.opleiding_interesse;
           }
-        }
+          return `<td style="text-align:center">${val === 'ja' ? '<span class="tag tag-ja">✓</span>' : '<span style="color:var(--gray-300)">—</span>'}</td>`;
+        }).join('');
 
         return `<tr>
           <td><strong>${r.naam||'—'}</strong><br><span style="color:var(--gray-500);font-size:.75rem">${r.email||''}</span></td>
           <td>${r.teams||'—'}</td>
-          <td>${r.training_frequentie ? r.training_frequentie+'× p/w' : '—'}<br><span style="color:var(--gray-500);font-size:.75rem">${(r.voorkeursdagen||[]).join(', ')||''}</span></td>
-          <td>${vroeg}</td>
-          <td><span class="tag ${r.coach_zaterdag==='ja'?'tag-ja':'tag-nee'}">${r.coach_zaterdag||'—'}</span></td>
-          <td><span class="tag ${r.zaalseizoen==='ja'?'tag-ja':'tag-nee'}">${r.zaalseizoen||'—'}</span></td>
-          <td>${r.ervaring_jaren||'—'} jr</td>
-          <td>${diploma}</td>
-          <td>${opleiding}</td>
+          <td style="text-align:center">${r.training_frequentie ? r.training_frequentie+'×' : '—'}</td>
+          ${voorkeurCellen}
+          ${vroegCellen}
+          <td style="text-align:center"><span class="tag ${r.coach_zaterdag==='ja'?'tag-ja':'tag-nee'}">${r.coach_zaterdag||'—'}</span></td>
+          <td style="text-align:center"><span class="tag ${r.zaalseizoen==='ja'?'tag-ja':'tag-nee'}">${r.zaalseizoen||'—'}</span></td>
+          <td style="text-align:center">${r.ervaring_jaren||'—'}</td>
+          ${diplomaCellen}
+          ${opleidingCellen}
         </tr>`;
       }).join('');
 
+      // Gegroepeerde headers
       wrap.innerHTML = `<table>
-        <thead><tr>
-          <th>Naam</th><th>Teams</th><th>Frequentie / voorkeur</th>
-          <th>Vroeg (17u)</th><th>Zaterdag</th><th>Zaal</th>
-          <th>Ervaring</th><th>Diploma</th><th>Opleiding</th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th rowspan="2">Naam</th>
+            <th rowspan="2">Teams</th>
+            <th rowspan="2" style="text-align:center">Freq.</th>
+            <th colspan="5" style="text-align:center;border-bottom:1px solid var(--gray-200)">Voorkeursdagen</th>
+            <th colspan="5" style="text-align:center;border-bottom:1px solid var(--gray-200)">Vroeg (17u)</th>
+            <th rowspan="2" style="text-align:center">Zat.</th>
+            <th rowspan="2" style="text-align:center">Zaal</th>
+            <th rowspan="2" style="text-align:center">Erv.</th>
+            <th colspan="3" style="text-align:center;border-bottom:1px solid var(--gray-200)">Diploma</th>
+            <th colspan="3" style="text-align:center;border-bottom:1px solid var(--gray-200)">Opleiding</th>
+          </tr>
+          <tr>
+            <th style="text-align:center">Ma</th><th style="text-align:center">Di</th><th style="text-align:center">Wo</th><th style="text-align:center">Do</th><th style="text-align:center">Vr</th>
+            <th style="text-align:center">Ma</th><th style="text-align:center">Di</th><th style="text-align:center">Wo</th><th style="text-align:center">Do</th><th style="text-align:center">Vr</th>
+            <th style="text-align:center">HT1</th><th style="text-align:center">HT2</th><th style="text-align:center">HT3</th>
+            <th style="text-align:center">HT1</th><th style="text-align:center">HT2</th><th style="text-align:center">HT3</th>
+          </tr>
+        </thead>
         <tbody>${rows}</tbody>
       </table>`;
     }
