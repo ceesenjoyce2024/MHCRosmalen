@@ -531,20 +531,46 @@
 
     window.exportCSV = function() {
       if (!allInzendingen.length) { alert('Geen inzendingen om te exporteren.'); return; }
-      const headers = ['Naam','Email','Adres','Telefoon','Teams','Frequentie','Voorkeursdagen','Vroeg Ma','Vroeg Di','Vroeg Wo','Vroeg Do','Vroeg Vr','Zaterdag','Zaalseizoen','Ervaring (jr)','Diploma HT1','Diploma HT2','Diploma HT3','Opleiding HT1','Opleiding HT2','Opleiding HT3','Datum'];
-      const rows = allInzendingen.map(r => [
-        r.naam||'', r.email||'', r.adres||'', r.telefoon||'', r.teams||'',
-        r.training_frequentie||'',
-        (r.voorkeursdagen||[]).join(';'),
-        r.vroeg_training_17u?.Maandag||'', r.vroeg_training_17u?.Dinsdag||'',
-        r.vroeg_training_17u?.Woensdag||'', r.vroeg_training_17u?.Donderdag||'',
-        r.vroeg_training_17u?.Vrijdag||'',
-        r.coach_zaterdag||'', r.zaalseizoen||'', r.ervaring_jaren||'',
-        r.diploma?.HT1||'', r.diploma?.HT2||'', r.diploma?.HT3||'',
-        r.opleiding_interesse?.HT1||'', r.opleiding_interesse?.HT2||'', r.opleiding_interesse?.HT3||'',
-        r.timestamp ? new Date(r.timestamp).toLocaleDateString('nl-NL') : ''
-      ]);
-      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const headers = [
+        'Naam','Email','Adres','Telefoon','Teams','Frequentie','Voorkeursdagen',
+        'Vroeg Ma','Vroeg Di','Vroeg Wo','Vroeg Do','Vroeg Vr',
+        'Zaterdag','Zaalseizoen','Ervaring (jr)',
+        'Diploma HT1','Diploma HT2','Diploma HT3',
+        'Opleiding HT1','Opleiding HT2','Opleiding HT3',
+        'Datum'
+      ];
+      const rows = allInzendingen.map(r => {
+        const vroeg = r.vroeg_training_17u || {};
+        const diploma = r.diploma || {};
+        const opleiding = (typeof r.opleiding_interesse === 'object' && r.opleiding_interesse) ? r.opleiding_interesse : {};
+        return [
+          r.naam||'',
+          r.email||'',
+          r.adres||'',
+          r.telefoon||'',
+          r.teams||'',
+          r.training_frequentie||'',
+          (r.voorkeursdagen||[]).join('; '),
+          vroeg.Maandag||'',
+          vroeg.Dinsdag||'',
+          vroeg.Woensdag||'',
+          vroeg.Donderdag||'',
+          vroeg.Vrijdag||'',
+          r.coach_zaterdag||'',
+          r.zaalseizoen||'',
+          r.ervaring_jaren||'',
+          diploma.HT1||'',
+          diploma.HT2||'',
+          diploma.HT3||'',
+          opleiding.HT1||'',
+          opleiding.HT2||'',
+          opleiding.HT3||'',
+          r.timestamp ? new Date(r.timestamp).toLocaleDateString('nl-NL') : ''
+        ];
+      });
+      const csv = [headers, ...rows]
+        .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';'))
+        .join('\n');
       const blob = new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
