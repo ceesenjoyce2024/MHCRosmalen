@@ -281,7 +281,7 @@
       const zaal = document.querySelector('input[name="zaal"]:checked')?.value;
       const ervaring = document.getElementById('ervaring').value.trim();
 
-      // Vroeg training: Ja/Nee per dag
+      // Vroeg training: sla alleen ja-dagen op als array
       const vroegDagen = ['ma','di','wo','do','vr'];
       const vroegNamen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag'];
       const vroegResultaat = {};
@@ -289,7 +289,7 @@
       vroegDagen.forEach((dag, i) => {
         const val = document.querySelector(`input[name="vroeg_${dag}"]:checked`)?.value;
         if (!val) vroegCompleet = false;
-        vroegResultaat[vroegNamen[i]] = val || null;
+        vroegResultaat[vroegNamen[i]] = val || 'nee';
       });
 
       // Diploma: Ja/Nee via checkboxes per niveau
@@ -300,7 +300,7 @@
         const ja = document.getElementById(`diploma_${ht}_ja`)?.checked;
         const nee = document.getElementById(`diploma_${ht}_nee`)?.checked;
         if (!ja && !nee) diplomaCompleet = false;
-        diplomaResultaat[ht.toUpperCase()] = ja ? 'ja' : nee ? 'nee' : null;
+        diplomaResultaat[ht.toUpperCase()] = ja ? 'ja' : 'nee';
       });
 
       // Opleiding: Ja/Nee per niveau (radio)
@@ -309,7 +309,7 @@
       diplomaNiveaus.forEach(ht => {
         const val = document.querySelector(`input[name="opleiding_${ht}"]:checked`)?.value;
         if (!val) opleidingCompleet = false;
-        opleidingResultaat[ht.toUpperCase()] = val || null;
+        opleidingResultaat[ht.toUpperCase()] = val || 'nee';
       });
 
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

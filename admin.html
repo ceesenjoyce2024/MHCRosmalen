@@ -330,51 +330,72 @@
         wrap.innerHTML = '<div class="empty-state">Geen inzendingen gevonden voor dit seizoen.</div>';
         return;
       }
-      const rows = data.map(r => `
-        <tr>
-          <td><strong>${r.naam || '—'}</strong><br><span style="color:var(--gray-500);font-size:.75rem">${r.email || ''}</span></td>
-          <td>${r.teams || '—'}</td>
-          <td>
-            ${r.trainingsdagen_1x?.length ? `1×: ${r.trainingsdagen_1x.join(', ')}` : ''}
-            ${r.trainingsdagen_1x?.length && r.trainingsdagen_2x?.length ? '<br>' : ''}
-            ${r.trainingsdagen_2x?.length ? `2×: ${r.trainingsdagen_2x.join(', ')}` : ''}
-          </td>
-          <td>${r.vroeg_training?.join(', ') || '—'}</td>
-          <td><span class="tag ${r.coach_zaterdag === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.coach_zaterdag || '—'}</span></td>
-          <td><span class="tag ${r.zaalseizoen === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.zaalseizoen || '—'}</span></td>
-          <td>
-            ${r.diploma_ht1 ? 'HT1 ' : ''}${r.diploma_ht2 ? 'HT2 ' : ''}${r.diploma_ht3 ? 'HT3' : ''}
-            ${!r.diploma_ht1 && !r.diploma_ht2 && !r.diploma_ht3 ? '—' : ''}
-          </td>
-          <td><span class="tag ${r.opleiding_interesse === 'ja' ? 'tag-ja' : 'tag-nee'}">${r.opleiding_interesse || '—'}</span></td>
-        </tr>
-      `).join('');
+      const rows = data.map(r => {
+        // Vroeg: ondersteun zowel object {Dinsdag:'ja'} als array ['Dinsdag']
+        let vroeg = '—';
+        if (r.vroeg_training_17u) {
+          if (Array.isArray(r.vroeg_training_17u)) {
+            vroeg = r.vroeg_training_17u.join(', ') || '—';
+          } else if (typeof r.vroeg_training_17u === 'object') {
+            vroeg = Object.entries(r.vroeg_training_17u).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || '—';
+          }
+        } else if (r.vroeg_training) {
+          // Oude data-structuur
+          vroeg = Array.isArray(r.vroeg_training) ? r.vroeg_training.join(', ') : r.vroeg_training || '—';
+        }
 
-      wrap.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Naam</th><th>Teams</th><th>Trainingsdagen</th>
-              <th>Vroeg (17u)</th><th>Zaterdag</th><th>Zaal</th>
-              <th>Diploma</th><th>Opleiding</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      `;
+        // Diploma
+        let diploma = '—';
+        if (r.diploma && typeof r.diploma === 'object') {
+          diploma = Object.entries(r.diploma).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || '—';
+        }
+
+        // Opleiding: ondersteun zowel object {HT2:'ja'} als string 'ja'/'nee'
+        let opleiding = '—';
+        if (r.opleiding_interesse) {
+          if (typeof r.opleiding_interesse === 'object' && !Array.isArray(r.opleiding_interesse)) {
+            opleiding = Object.entries(r.opleiding_interesse).filter(([,v]) => v === 'ja').map(([k]) => k).join(', ') || 'Nee';
+          } else if (typeof r.opleiding_interesse === 'string') {
+            opleiding = r.opleiding_interesse;
+          }
+        }
+
+        return `<tr>
+          <td><strong>${r.naam||'—'}</strong><br><span style="color:var(--gray-500);font-size:.75rem">${r.email||''}</span></td>
+          <td>${r.teams||'—'}</td>
+          <td>${r.training_frequentie ? r.training_frequentie+'× p/w' : '—'}<br><span style="color:var(--gray-500);font-size:.75rem">${(r.voorkeursdagen||[]).join(', ')||''}</span></td>
+          <td>${vroeg}</td>
+          <td><span class="tag ${r.coach_zaterdag==='ja'?'tag-ja':'tag-nee'}">${r.coach_zaterdag||'—'}</span></td>
+          <td><span class="tag ${r.zaalseizoen==='ja'?'tag-ja':'tag-nee'}">${r.zaalseizoen||'—'}</span></td>
+          <td>${r.ervaring_jaren||'—'} jr</td>
+          <td>${diploma}</td>
+          <td>${opleiding}</td>
+        </tr>`;
+      }).join('');
+
+      wrap.innerHTML = `<table>
+        <thead><tr>
+          <th>Naam</th><th>Teams</th><th>Frequentie / voorkeur</th>
+          <th>Vroeg (17u)</th><th>Zaterdag</th><th>Zaal</th>
+          <th>Ervaring</th><th>Diploma</th><th>Opleiding</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
     }
 
     window.exportCSV = function() {
       if (!allInzendingen.length) { alert('Geen inzendingen om te exporteren.'); return; }
-      const headers = ['Naam','Email','Adres','Telefoon','Teams','1x-dagen','2x-dagen','Vroeg 17u','Zaterdag','Zaalseizoen','Ervaring (jr)','HT1','HT2','HT3','Opleiding','Datum'];
+      const headers = ['Naam','Email','Adres','Telefoon','Teams','Frequentie','Voorkeursdagen','Vroeg Ma','Vroeg Di','Vroeg Wo','Vroeg Do','Vroeg Vr','Zaterdag','Zaalseizoen','Ervaring (jr)','Diploma HT1','Diploma HT2','Diploma HT3','Opleiding HT1','Opleiding HT2','Opleiding HT3','Datum'];
       const rows = allInzendingen.map(r => [
         r.naam||'', r.email||'', r.adres||'', r.telefoon||'', r.teams||'',
-        (r.trainingsdagen_1x||[]).join(';'),
-        (r.trainingsdagen_2x||[]).join(';'),
-        (r.vroeg_training||[]).join(';'),
+        r.training_frequentie||'',
+        (r.voorkeursdagen||[]).join(';'),
+        r.vroeg_training_17u?.Maandag||'', r.vroeg_training_17u?.Dinsdag||'',
+        r.vroeg_training_17u?.Woensdag||'', r.vroeg_training_17u?.Donderdag||'',
+        r.vroeg_training_17u?.Vrijdag||'',
         r.coach_zaterdag||'', r.zaalseizoen||'', r.ervaring_jaren||'',
-        r.diploma_ht1?'ja':'nee', r.diploma_ht2?'ja':'nee', r.diploma_ht3?'ja':'nee',
-        r.opleiding_interesse||'',
+        r.diploma?.HT1||'', r.diploma?.HT2||'', r.diploma?.HT3||'',
+        r.opleiding_interesse?.HT1||'', r.opleiding_interesse?.HT2||'', r.opleiding_interesse?.HT3||'',
         r.timestamp ? new Date(r.timestamp).toLocaleDateString('nl-NL') : ''
       ]);
       const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
