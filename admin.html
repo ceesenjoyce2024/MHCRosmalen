@@ -25,7 +25,7 @@
     .login-card img { width: 72px; margin-bottom: 1rem; }
     .login-card h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: .25rem; }
     .login-card p { font-size: 0.875rem; color: var(--gray-500); margin-bottom: 1.5rem; }
-    .login-card input { width: 100%; padding: 10px 12px; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: .75rem; outline: none; color: var(--navy); }
+    .login-card input { width: 100%; padding: 10px 12px; font-family: inherit; font-size: 16px; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: .75rem; outline: none; color: var(--navy); }
     .login-card input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,168,0,0.15); }
     .login-btn { width: 100%; padding: 11px; font-family: inherit; font-size: 1rem; font-weight: 600; background: var(--navy); color: var(--white); border: none; border-radius: 8px; cursor: pointer; }
     .login-btn:hover { background: #0a1f45; }
@@ -53,7 +53,36 @@
 
     /* SEIZOEN WIDGET */
     .seizoen-widget { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media(max-width:600px) { .seizoen-widget { grid-template-columns: 1fr; } }
+    @media(max-width:600px) {
+      .seizoen-widget { grid-template-columns: 1fr; }
+      header { padding: .875rem 1rem; }
+      header img { width: 34px; height: 34px; }
+      header h1 { font-size: .95rem; }
+      header span { font-size: .65rem; }
+      .header-actions { gap: .5rem; }
+      .header-user { display: none; }
+      .logout-btn, .back-link-btn { font-size: .75rem; padding: 4px 8px; }
+      main { padding: 1rem .75rem 3rem; }
+      .section-title { margin-top: 1.25rem; }
+      .seizoen-actief, .nieuw-seizoen { padding: 1rem; }
+      .seizoen-naam { font-size: 1.15rem; }
+      .card { padding: 1rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-value { font-size: 1.25rem; }
+      .btn { font-size: .8rem; padding: 7px 12px; }
+      /* Tabel scrollbaar op mobiel */
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { font-size: .75rem; min-width: 600px; }
+      th, td { padding: 6px 8px; }
+      /* Modal op volledig scherm */
+      .modal { max-height: 100vh; border-radius: 0; max-width: 100%; }
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal-body { padding: 1rem; }
+      .modal-footer { padding: .75rem 1rem; }
+      .form-row input, .form-row select { font-size: 16px; } /* Voorkom zoom op iOS */
+      .ht-grid { gap: 4px 12px; }
+      .check-grid { gap: .5rem; }
+    }
 
     .seizoen-actief { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.25rem 1.5rem; }
     .seizoen-actief h3 { font-size: 0.8125rem; font-weight: 500; color: var(--gray-500); margin-bottom: .25rem; }
