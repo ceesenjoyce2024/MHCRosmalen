@@ -110,6 +110,31 @@
 
     .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--navy); color: var(--white); padding: .75rem 1.25rem; border-radius: 8px; font-size: 0.875rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 99; }
     .toast.show { opacity: 1; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: var(--radius); width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; background: var(--white); z-index: 1; }
+    .modal-header h3 { font-size: 1rem; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--gray-500); padding: 4px 8px; border-radius: 4px; }
+    .modal-close:hover { background: var(--gray-100); }
+    .modal-body { padding: 1.25rem 1.5rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gray-200); display: flex; gap: .75rem; justify-content: flex-end; }
+    .form-row { margin-bottom: 1rem; }
+    .form-row label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--gray-700); margin-bottom: .4rem; }
+    .form-row input[type=text], .form-row input[type=email], .form-row input[type=number] { width: 100%; padding: 8px 10px; font-family: inherit; font-size: 0.875rem; border: 1px solid var(--gray-300); border-radius: 6px; outline: none; color: var(--navy); }
+    .form-row input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245,168,0,0.15); }
+    .form-row select { width: 100%; padding: 8px 10px; font-family: inherit; font-size: 0.875rem; border: 1px solid var(--gray-300); border-radius: 6px; outline: none; color: var(--navy); background: var(--white); }
+    .check-grid { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .check-grid label { display: flex; align-items: center; gap: .4rem; font-size: 0.875rem; cursor: pointer; }
+    .radio-yn { display: flex; gap: 1.5rem; }
+    .radio-yn label { display: flex; align-items: center; gap: .4rem; font-size: 0.875rem; cursor: pointer; }
+    .ht-grid { display: grid; grid-template-columns: auto 1fr 1fr; gap: 6px 16px; align-items: center; font-size: 0.875rem; }
+    .ht-grid .ht-header { font-size: 0.75rem; font-weight: 500; color: var(--gray-500); text-align: center; }
+    .form-section { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-500); margin: 1.25rem 0 .75rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); }
+    tr.clickable { cursor: pointer; }
+    tr.clickable:hover td { background: #FFF8E6 !important; }
   </style>
 </head>
 <body>
@@ -197,6 +222,96 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <!-- BEWERK MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this) sluitModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Inzending bewerken</h3>
+        <button class="modal-close" onclick="sluitModal()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-section">Persoonsgegevens</div>
+        <div class="form-row"><label>Naam</label><input type="text" id="m-naam"></div>
+        <div class="form-row"><label>E-mailadres</label><input type="email" id="m-email"></div>
+        <div class="form-row"><label>Adres</label><input type="text" id="m-adres"></div>
+        <div class="form-row"><label>Telefoonnummer</label><input type="text" id="m-telefoon"></div>
+        <div class="form-row"><label>Teams</label><input type="text" id="m-teams"></div>
+
+        <div class="form-section">Training</div>
+        <div class="form-row">
+          <label>Frequentie per week</label>
+          <select id="m-freq">
+            <option value="1">1 keer per week</option>
+            <option value="2">2 keer per week</option>
+            <option value="3+">3 of meer per week</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Voorkeursdagen</label>
+          <div class="check-grid">
+            <label><input type="checkbox" id="m-vk-ma" value="Maandag"> Ma</label>
+            <label><input type="checkbox" id="m-vk-di" value="Dinsdag"> Di</label>
+            <label><input type="checkbox" id="m-vk-wo" value="Woensdag"> Wo</label>
+            <label><input type="checkbox" id="m-vk-do" value="Donderdag"> Do</label>
+            <label><input type="checkbox" id="m-vk-vr" value="Vrijdag"> Vr</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Kan om 17:00 uur trainen</label>
+          <div class="check-grid">
+            <label><input type="checkbox" id="m-vroeg-ma" value="Maandag"> Ma</label>
+            <label><input type="checkbox" id="m-vroeg-di" value="Dinsdag"> Di</label>
+            <label><input type="checkbox" id="m-vroeg-wo" value="Woensdag"> Wo</label>
+            <label><input type="checkbox" id="m-vroeg-do" value="Donderdag"> Do</label>
+            <label><input type="checkbox" id="m-vroeg-vr" value="Vrijdag"> Vr</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Coach op zaterdag</label>
+          <div class="radio-yn">
+            <label><input type="radio" name="m-zat" value="ja"> Ja</label>
+            <label><input type="radio" name="m-zat" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Draait zaalseizoen</label>
+          <div class="radio-yn">
+            <label><input type="radio" name="m-zaal" value="ja"> Ja</label>
+            <label><input type="radio" name="m-zaal" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="form-row"><label>Jaren ervaring</label><input type="number" id="m-erv" min="0" max="60" style="width:100px"></div>
+
+        <div class="form-section">Diploma's &amp; Opleiding</div>
+        <div class="form-row">
+          <label>Beschikt over diploma</label>
+          <div class="ht-grid">
+            <div></div><div class="ht-header">Ja</div><div class="ht-header">Nee</div>
+            <span>HT1</span><label style="justify-content:center"><input type="radio" name="m-dip-ht1" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-dip-ht1" value="nee"></label>
+            <span>HT2</span><label style="justify-content:center"><input type="radio" name="m-dip-ht2" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-dip-ht2" value="nee"></label>
+            <span>HT3</span><label style="justify-content:center"><input type="radio" name="m-dip-ht3" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-dip-ht3" value="nee"></label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Wil opleiding volgen</label>
+          <div class="ht-grid">
+            <div></div><div class="ht-header">Ja</div><div class="ht-header">Nee</div>
+            <span>HT1</span><label style="justify-content:center"><input type="radio" name="m-opl-ht1" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-opl-ht1" value="nee"></label>
+            <span>HT2</span><label style="justify-content:center"><input type="radio" name="m-opl-ht2" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-opl-ht2" value="nee"></label>
+            <span>HT3</span><label style="justify-content:center"><input type="radio" name="m-opl-ht3" value="ja"></label><label style="justify-content:center"><input type="radio" name="m-opl-ht3" value="nee"></label>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" onclick="verwijderInzending()">Verwijderen</button>
+        <button class="btn btn-secondary" onclick="sluitModal()">Annuleren</button>
+        <button class="btn btn-primary" onclick="slaOpInzending()">Opslaan</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -312,7 +427,8 @@
       goOffline(db); goOnline(db);
       const snap = await get(ref(db, huidigSeizoenKey));
       const data = snap.val() || {};
-      allInzendingen = Object.values(data);
+      // Bewaar de Firebase key in elk record
+      allInzendingen = Object.entries(data).map(([key, val]) => ({ ...val, _key: key }));
       renderTabel(allInzendingen);
       renderStats(allInzendingen);
     };
@@ -373,7 +489,7 @@
           return `<td style="text-align:center">${val === 'ja' ? '<span class="tag tag-ja">✓</span>' : '<span style="color:var(--gray-300)">—</span>'}</td>`;
         }).join('');
 
-        return `<tr>
+        return `<tr class="clickable" onclick="openModal('${r._key}')">
           <td><strong>${r.naam||'—'}</strong><br><span style="color:var(--gray-500);font-size:.75rem">${r.email||''}</span></td>
           <td>${r.teams||'—'}</td>
           <td style="text-align:center">${r.training_frequentie ? r.training_frequentie+'×' : '—'}</td>
@@ -445,6 +561,130 @@
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
     }
+
+    let huidigEditKey = null;
+
+    window.openModal = function(key) {
+      const r = allInzendingen.find(x => x._key === key);
+      if (!r) return;
+      huidigEditKey = key;
+
+      // Vul velden in
+      document.getElementById('m-naam').value = r.naam || '';
+      document.getElementById('m-email').value = r.email || '';
+      document.getElementById('m-adres').value = r.adres || '';
+      document.getElementById('m-telefoon').value = r.telefoon || '';
+      document.getElementById('m-teams').value = r.teams || '';
+      document.getElementById('m-erv').value = r.ervaring_jaren || '';
+      document.getElementById('m-freq').value = r.training_frequentie || '1';
+
+      // Voorkeursdagen
+      ['ma','di','wo','do','vr'].forEach(d => {
+        const dag = {ma:'Maandag',di:'Dinsdag',wo:'Woensdag',do:'Donderdag',vr:'Vrijdag'}[d];
+        document.getElementById(`m-vk-${d}`).checked = (r.voorkeursdagen||[]).includes(dag);
+      });
+
+      // Vroeg 17u
+      ['ma','di','wo','do','vr'].forEach(d => {
+        const dag = {ma:'Maandag',di:'Dinsdag',wo:'Woensdag',do:'Donderdag',vr:'Vrijdag'}[d];
+        const val = r.vroeg_training_17u?.[dag];
+        document.getElementById(`m-vroeg-${d}`).checked = val === 'ja';
+      });
+
+      // Zaterdag & zaal
+      const zat = document.querySelector(`input[name="m-zat"][value="${r.coach_zaterdag||'nee'}"]`);
+      if (zat) zat.checked = true;
+      const zaal = document.querySelector(`input[name="m-zaal"][value="${r.zaalseizoen||'nee'}"]`);
+      if (zaal) zaal.checked = true;
+
+      // Diploma
+      ['ht1','ht2','ht3'].forEach(ht => {
+        const val = r.diploma?.[ht.toUpperCase()] || 'nee';
+        const el = document.querySelector(`input[name="m-dip-${ht}"][value="${val}"]`);
+        if (el) el.checked = true;
+      });
+
+      // Opleiding
+      ['ht1','ht2','ht3'].forEach(ht => {
+        const val = r.opleiding_interesse?.[ht.toUpperCase()] || 'nee';
+        const el = document.querySelector(`input[name="m-opl-${ht}"][value="${val}"]`);
+        if (el) el.checked = true;
+      });
+
+      document.getElementById('modal-overlay').classList.add('open');
+    };
+
+    window.sluitModal = function() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      huidigEditKey = null;
+    };
+
+    window.slaOpInzending = async function() {
+      if (!huidigEditKey || !huidigSeizoenKey) return;
+
+      const vroegResultaat = {};
+      ['ma','di','wo','do','vr'].forEach(d => {
+        const dag = {ma:'Maandag',di:'Dinsdag',wo:'Woensdag',do:'Donderdag',vr:'Vrijdag'}[d];
+        vroegResultaat[dag] = document.getElementById(`m-vroeg-${d}`).checked ? 'ja' : 'nee';
+      });
+
+      const voorkeursdagen = ['ma','di','wo','do','vr']
+        .filter(d => document.getElementById(`m-vk-${d}`).checked)
+        .map(d => ({ma:'Maandag',di:'Dinsdag',wo:'Woensdag',do:'Donderdag',vr:'Vrijdag'}[d]));
+
+      const diploma = {};
+      ['ht1','ht2','ht3'].forEach(ht => {
+        diploma[ht.toUpperCase()] = document.querySelector(`input[name="m-dip-${ht}"]:checked`)?.value || 'nee';
+      });
+
+      const opleiding = {};
+      ['ht1','ht2','ht3'].forEach(ht => {
+        opleiding[ht.toUpperCase()] = document.querySelector(`input[name="m-opl-${ht}"]:checked`)?.value || 'nee';
+      });
+
+      const updated = {
+        naam: document.getElementById('m-naam').value.trim(),
+        email: document.getElementById('m-email').value.trim(),
+        adres: document.getElementById('m-adres').value.trim(),
+        telefoon: document.getElementById('m-telefoon').value.trim(),
+        teams: document.getElementById('m-teams').value.trim(),
+        training_frequentie: document.getElementById('m-freq').value,
+        voorkeursdagen,
+        vroeg_training_17u: vroegResultaat,
+        coach_zaterdag: document.querySelector('input[name="m-zat"]:checked')?.value || 'nee',
+        zaalseizoen: document.querySelector('input[name="m-zaal"]:checked')?.value || 'nee',
+        ervaring_jaren: document.getElementById('m-erv').value,
+        diploma,
+        opleiding_interesse: opleiding,
+        timestamp: allInzendingen.find(x => x._key === huidigEditKey)?.timestamp || new Date().toISOString(),
+        gewijzigd: new Date().toISOString()
+      };
+
+      try {
+        await set(ref(db, `${huidigSeizoenKey}/${huidigEditKey}`), updated);
+        sluitModal();
+        await loadInzendingen();
+        showToast('Inzending opgeslagen ✓');
+      } catch(e) {
+        alert('Fout bij opslaan: ' + e.message);
+        console.error(e);
+      }
+    };
+
+    window.verwijderInzending = async function() {
+      if (!huidigEditKey || !huidigSeizoenKey) return;
+      const naam = allInzendingen.find(x => x._key === huidigEditKey)?.naam || 'deze inzending';
+      if (!confirm(`Weet je zeker dat je de inzending van "${naam}" wilt verwijderen?`)) return;
+      try {
+        await set(ref(db, `${huidigSeizoenKey}/${huidigEditKey}`), null);
+        sluitModal();
+        await loadInzendingen();
+        showToast('Inzending verwijderd');
+      } catch(e) {
+        alert('Fout bij verwijderen: ' + e.message);
+        console.error(e);
+      }
+    };
   </script>
 </body>
 </html>
