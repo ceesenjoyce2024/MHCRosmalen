@@ -554,16 +554,49 @@
         ];
       });
 
-      // Bouw Excel bestand met autofilter via SheetJS
-      const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
-      const wsData = [headers, ...rows];
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: {r:0,c:0}, e: {r:0,c:headers.length-1} }) };
-      // Kolombreedte instellen
-      ws['!cols'] = headers.map((h,i) => ({ wch: i < 2 ? 24 : i === 6 ? 30 : 10 }));
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Inzendingen');
-      XLSX.writeFile(wb, `inzendingen_${huidigSeizoenKey || 'export'}.xlsx`);
+      // Bouw gestylde Excel via ExcelJS
+      const ExcelJS = (await import('https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js')).default || window.ExcelJS;
+
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Inzendingen');
+
+      // Kolombreedte
+      ws.columns = headers.map((h, i) => ({
+        header: h,
+        width: i < 2 ? 24 : i === 6 ? 30 : 12
+      }));
+
+      // Stijl header rij
+      const centeredCols = new Set([5, 7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]); // F=5, H-V=7-21 (0-based)
+      ws.getRow(1).eachCell((cell, colNumber) => {
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.font = { bold: true };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE5E7EB' } };
+      });
+
+      // Autofilter
+      ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: headers.length } };
+
+      // Voeg data rijen toe
+      rows.forEach(row => {
+        const excelRow = ws.addRow(row);
+        excelRow.eachCell((cell, colNumber) => {
+          const colIdx = colNumber - 1; // 0-based
+          if (centeredCols.has(colIdx)) {
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          }
+        });
+      });
+
+      // Download
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `inzendingen_${huidigSeizoenKey || 'export'}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
       showToast('Excel geëxporteerd ✓');
     };
 
