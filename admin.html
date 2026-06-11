@@ -211,7 +211,7 @@
         </div>
 
         <div style="display:flex;justify-content:flex-end;margin-bottom:.75rem">
-          <button class="btn btn-secondary" onclick="exportCSV()">⬇ Exporteer CSV</button>
+          <button class="btn btn-secondary" onclick="exportCSV()">⬇ Exporteer Excel</button>
         </div>
 
         <div class="table-wrap" id="table-wrap">
@@ -529,7 +529,7 @@
       </table>`;
     }
 
-    window.exportCSV = function() {
+    window.exportCSV = async function() {
       if (!allInzendingen.length) { alert('Geen inzendingen om te exporteren.'); return; }
       const headers = [
         'Naam','Email','Adres','Telefoon','Teams','Frequentie','Voorkeursdagen',
@@ -544,41 +544,27 @@
         const diploma = r.diploma || {};
         const opleiding = (typeof r.opleiding_interesse === 'object' && r.opleiding_interesse) ? r.opleiding_interesse : {};
         return [
-          r.naam||'',
-          r.email||'',
-          r.adres||'',
-          r.telefoon||'',
-          r.teams||'',
-          r.training_frequentie||'',
-          (r.voorkeursdagen||[]).join('; '),
-          vroeg.Maandag||'',
-          vroeg.Dinsdag||'',
-          vroeg.Woensdag||'',
-          vroeg.Donderdag||'',
-          vroeg.Vrijdag||'',
-          r.coach_zaterdag||'',
-          r.zaalseizoen||'',
-          r.ervaring_jaren||'',
-          diploma.HT1||'',
-          diploma.HT2||'',
-          diploma.HT3||'',
-          opleiding.HT1||'',
-          opleiding.HT2||'',
-          opleiding.HT3||'',
+          r.naam||'', r.email||'', r.adres||'', r.telefoon||'', r.teams||'',
+          r.training_frequentie||'', (r.voorkeursdagen||[]).join('; '),
+          vroeg.Maandag||'', vroeg.Dinsdag||'', vroeg.Woensdag||'', vroeg.Donderdag||'', vroeg.Vrijdag||'',
+          r.coach_zaterdag||'', r.zaalseizoen||'', r.ervaring_jaren||'',
+          diploma.HT1||'', diploma.HT2||'', diploma.HT3||'',
+          opleiding.HT1||'', opleiding.HT2||'', opleiding.HT3||'',
           r.timestamp ? new Date(r.timestamp).toLocaleDateString('nl-NL') : ''
         ];
       });
-      const csv = [headers, ...rows]
-        .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';'))
-        .join('\n');
-      const blob = new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `inzendingen_${huidigSeizoenKey || 'export'}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('CSV geëxporteerd');
+
+      // Bouw Excel bestand met autofilter via SheetJS
+      const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const wsData = [headers, ...rows];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: {r:0,c:0}, e: {r:0,c:headers.length-1} }) };
+      // Kolombreedte instellen
+      ws['!cols'] = headers.map((h,i) => ({ wch: i < 2 ? 24 : i === 6 ? 30 : 10 }));
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Inzendingen');
+      XLSX.writeFile(wb, `inzendingen_${huidigSeizoenKey || 'export'}.xlsx`);
+      showToast('Excel geëxporteerd ✓');
     };
 
     function showToast(msg) {
