@@ -184,11 +184,20 @@
             <span class="toggle-label" id="toggle-label">Formulier gesloten</span>
           </div>
 
+          <div style="margin-bottom:.5rem;font-size:0.8125rem;font-weight:500;color:var(--gray-500)">Seizoen bekijken of activeren</div>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-            <select id="seizoen-select" onchange="wisselSeizoen(this.value)" style="flex:1;min-width:140px">
+            <select id="seizoen-select" onchange="seizoenGekozen(this.value)" style="flex:1;min-width:140px">
               <option value="">— selecteer seizoen —</option>
             </select>
-            <button class="btn btn-secondary" onclick="loadInzendingen()">↻ Vernieuwen</button>
+            <button class="btn btn-secondary" onclick="loadInzendingen()">↻</button>
+          </div>
+          <div style="display:flex;gap:.5rem;margin-top:.5rem">
+            <button class="btn btn-primary" id="activeer-btn" onclick="activeerSeizoen()" style="flex:1;display:none">
+              ✓ Activeer &amp; open formulier
+            </button>
+          </div>
+          <div id="activeer-hint" style="font-size:0.75rem;color:var(--gray-500);margin-top:.4rem;display:none">
+            Dit sluit het huidige seizoen en opent het geselecteerde seizoen.
           </div>
         </div>
 
@@ -399,16 +408,44 @@
       showToast(open ? 'Formulier is nu open' : 'Formulier is nu gesloten');
     };
 
-    window.wisselSeizoen = async function(key) {
-      if (!key) return;
+    window.seizoenGekozen = async function(key) {
+      if (!key) {
+        document.getElementById('activeer-btn').style.display = 'none';
+        document.getElementById('activeer-hint').style.display = 'none';
+        return;
+      }
       huidigSeizoenKey = key;
-      const sel = document.getElementById('seizoen-select');
-      const naam = sel.options[sel.selectedIndex].text;
-      await update(ref(db, 'seizoen_config'), { actief_seizoen: key, naam });
-      document.getElementById('actief-naam').textContent = naam;
-      showToast(`Actief seizoen: ${naam}`);
+      // Toon activeer-knop alleen als het geselecteerde seizoen NIET het actieve is
+      const snap = await get(ref(db, 'seizoen_config'));
+      const config = snap.val() || {};
+      const isActief = config.actief_seizoen === key;
+      document.getElementById('activeer-btn').style.display = isActief ? 'none' : 'flex';
+      document.getElementById('activeer-hint').style.display = isActief ? 'none' : 'block';
       await loadInzendingen();
     };
+
+    window.activeerSeizoen = async function() {
+      const key = document.getElementById('seizoen-select').value;
+      if (!key) return;
+      const sel = document.getElementById('seizoen-select');
+      const naam = sel.options[sel.selectedIndex].text;
+      if (!confirm(`Weet je zeker dat je "${naam}" wilt activeren?\n\nHet huidige seizoen wordt gesloten en "${naam}" wordt geopend.`)) return;
+
+      await update(ref(db, 'seizoen_config'), {
+        actief_seizoen: key,
+        naam: naam,
+        formulier_open: true
+      });
+
+      document.getElementById('actief-naam').textContent = naam;
+      document.getElementById('formulier-toggle').checked = true;
+      document.getElementById('toggle-label').textContent = 'Formulier open';
+      document.getElementById('activeer-btn').style.display = 'none';
+      document.getElementById('activeer-hint').style.display = 'none';
+      showToast(`Seizoen "${naam}" is nu actief en open`);
+    };
+
+    window.wisselSeizoen = window.seizoenGekozen; // backwards compat
 
     window.maakSeizoen = async function() {
       const naam = document.getElementById('nieuw-naam').value.trim();
