@@ -2,6 +2,8 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventarisatie prestatieteam – MHC Rosmalen</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -58,6 +60,26 @@
     .gesloten-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); border-top: 4px solid var(--danger); padding: 2.5rem 1.5rem; text-align: center; display: none; }
     .gesloten-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: .5rem; }
     .gesloten-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.5; }
+
+    @media(max-width:600px) {
+      header { padding: .875rem 1rem; }
+      header img { width: 34px; height: 34px; }
+      header h1 { font-size: .95rem; }
+      header span { font-size: .65rem; }
+      main { padding: 1.5rem .75rem 3rem; }
+      .form-header { padding: 1rem; }
+      .form-header h2 { font-size: 1.1rem; }
+      .card { padding: 1rem; }
+      /* Voorkom automatisch inzoomen op iOS bij focus */
+      input[type=text], input[type=email], input[type=number] { font-size: 16px; }
+      /* Grid tabel smaller maken */
+      .grid-table { font-size: .8125rem; }
+      .grid-table th, .grid-table td { padding: 6px 2px; }
+      /* Vroeg-training grid smaller */
+      .days-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; font-size: .8125rem; }
+      .submit-btn { font-size: .9375rem; padding: 14px; }
+      .back-home { display: block; text-align: center; }
+    }
   </style>
   <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.ready).then(reg=>reg.update());}</script>
 </head>
