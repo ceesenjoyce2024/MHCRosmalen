@@ -379,7 +379,7 @@
       if (!user) { window.location.href = 'index.html'; return; }
 
       // Haal rol op
-      const key = user.email.replace(/\./g, ',');
+      const key = user.email.replace(/[.@]/g, '_');
       const snap = await get(ref(db, `gebruikers/${key}`));
       const data = snap.val();
 

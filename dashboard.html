@@ -38,6 +38,7 @@
     .card p { font-size: .8125rem; color: var(--gray-500); line-height: 1.5; flex: 1; }
     .card-arrow { font-size: .8125rem; font-weight: 500; color: var(--gold-dark); }
     .rol-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .rol-sa { background: #FDE8FF; color: #7E22CE; }
     .rol-tc { background: #DBEAFE; color: #1E40AF; }
     .rol-lc { background: #D1FAE5; color: #065F46; }
     .rol-bs { background: #F3F4F6; color: #374151; }
@@ -111,12 +112,14 @@
     const db = getDatabase(app);
 
     const rolLabels = {
+      superadmin: 'Superadmin',
       technische_coordinator: 'Technische coördinator',
       lijncoordinator: 'Lijncoördinator',
       bestuurslid: 'Bestuurslid'
     };
 
     const rolBadgeClass = {
+      superadmin: 'rol-sa',
       technische_coordinator: 'rol-tc',
       lijncoordinator: 'rol-lc',
       bestuurslid: 'rol-bs'
@@ -124,9 +127,12 @@
 
     // Kaarten per rol
     const kaarten = {
+      superadmin: [
+        { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Beheer seizoenen, bekijk inzendingen en exporteer naar Excel.', link: 'admin.html', knop: 'Naar beheer →' },
+        { icon: '👥', titel: 'Gebruikersbeheer', omschrijving: 'Voeg gebruikers toe, wijzig rollen of verwijder accounts.', link: 'gebruikers.html', knop: 'Beheren →' },
+      ],
       technische_coordinator: [
         { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Beheer seizoenen, bekijk inzendingen en exporteer naar Excel.', link: 'admin.html', knop: 'Naar beheer →' },
-        { icon: '👥', titel: 'Gebruikersbeheer', omschrijving: 'Voeg gebruikers toe of wijzig rollen.', link: 'gebruikers.html', knop: 'Beheren →', binnenkort: true },
       ],
       lijncoordinator: [
         { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Bekijk de inzendingen van trainers en coaches.', link: 'admin.html', knop: 'Bekijken →' },
@@ -139,7 +145,7 @@
     onAuthStateChanged(auth, async user => {
       if (!user) { window.location.href = 'index.html'; return; }
 
-      const key = user.email.replace(/\./g, ',');
+      const key = user.email.replace(/[.@]/g, '_');
       const snap = await get(ref(db, `gebruikers/${key}`));
       const data = snap.val();
 

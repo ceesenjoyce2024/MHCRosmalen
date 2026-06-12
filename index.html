@@ -78,7 +78,7 @@
     const provider = new GoogleAuthProvider();
 
     async function getRol(email) {
-      const key = email.replace(/\./g, ',');
+      const key = email.replace(/[.@]/g, '_');
       const snap = await get(ref(db, `gebruikers/${key}`));
       return snap.val()?.rol || null;
     }
