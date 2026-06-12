@@ -386,15 +386,29 @@
       if (!data) { await signOut(auth); window.location.href = 'index.html'; return; }
 
       // Bestuurslid mag alleen lezen - verberg bewerkopties
-      const rolLabel = { technische_coordinator: 'Technische coördinator', lijncoordinator: 'Lijncoördinator', bestuurslid: 'Bestuurslid' }[data.rol] || data.rol;
+      const rolLabel = { superadmin: 'Superadmin', technische_coordinator: 'Technische coördinator', lijncoordinator: 'Lijncoördinator', bestuurslid: 'Bestuurslid' }[data.rol] || data.rol;
 
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app-screen').style.display = 'block';
       document.getElementById('header-user').textContent = `${data.naam || user.displayName} – ${rolLabel}`;
 
-      // Bestuurslid: verberg bewerkknop en toggle
-      if (data.rol === 'bestuurslid') {
-        document.querySelectorAll('#activeer-btn, #formulier-toggle, .btn-primary, .btn-danger, .nieuw-seizoen').forEach(el => el.style.display = 'none');
+      // Bestuurslid én lijncoordinator: alleen lezen
+      if (data.rol === 'bestuurslid' || data.rol === 'lijncoordinator') {
+        // Verberg alle bewerkopties
+        document.querySelectorAll('.btn-primary, .btn-danger, .nieuw-seizoen').forEach(el => el.style.display = 'none');
+        // Disable toggle zodat het niet klikbaar is
+        const toggle = document.getElementById('formulier-toggle');
+        if (toggle) { toggle.disabled = true; toggle.style.opacity = '.4'; toggle.style.cursor = 'not-allowed'; }
+        // Verberg activeer knop en hint
+        const activeerBtn = document.getElementById('activeer-btn');
+        if (activeerBtn) activeerBtn.style.display = 'none';
+        const activeerHint = document.getElementById('activeer-hint');
+        if (activeerHint) activeerHint.style.display = 'none';
+        // Verberg vernieuwen knop niet - die mag wel
+        // Verberg bewerkknop in tabel via CSS
+        const style = document.createElement('style');
+        style.textContent = 'tr.clickable { cursor: default !important; pointer-events: none; } .seizoen-select { pointer-events: none; opacity: .6; }';
+        document.head.appendChild(style);
       }
 
       initApp();
