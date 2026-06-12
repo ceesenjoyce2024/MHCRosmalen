@@ -194,7 +194,7 @@
       </div>
       <div class="header-actions">
         <span class="header-user" id="header-user"></span>
-        <a href="index.html" style="font-size:0.8rem;color:rgba(255,255,255,0.7);text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:5px 12px;border-radius:6px;">← Portaal</a>
+        <a href="dashboard.html" style="font-size:0.8rem;color:rgba(255,255,255,0.7);text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:5px 12px;border-radius:6px;">← Dashboard</a>
         <button class="logout-btn" onclick="doLogout()">Uitloggen</button>
       </div>
     </header>
@@ -357,7 +357,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getDatabase, ref, get, set, update, goOffline, goOnline } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
@@ -374,32 +374,33 @@
     let allInzendingen = [];
     let huidigSeizoenKey = null;
 
-    // AUTH STATE
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app-screen').style.display = 'block';
-        document.getElementById('header-user').textContent = user.email;
-        initApp();
-      } else {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('app-screen').style.display = 'none';
+    // AUTH STATE - controleer Google login en rol
+    onAuthStateChanged(auth, async user => {
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      // Haal rol op
+      const key = user.email.replace(/\./g, ',');
+      const snap = await get(ref(db, `gebruikers/${key}`));
+      const data = snap.val();
+
+      if (!data) { await signOut(auth); window.location.href = 'index.html'; return; }
+
+      // Bestuurslid mag alleen lezen - verberg bewerkopties
+      const rolLabel = { technische_coordinator: 'Technische coördinator', lijncoordinator: 'Lijncoördinator', bestuurslid: 'Bestuurslid' }[data.rol] || data.rol;
+
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+      document.getElementById('header-user').textContent = `${data.naam || user.displayName} – ${rolLabel}`;
+
+      // Bestuurslid: verberg bewerkknop en toggle
+      if (data.rol === 'bestuurslid') {
+        document.querySelectorAll('#activeer-btn, #formulier-toggle, .btn-primary, .btn-danger, .nieuw-seizoen').forEach(el => el.style.display = 'none');
       }
+
+      initApp();
     });
 
-    window.doLogin = async function() {
-      const email = document.getElementById('login-email').value.trim();
-      const pw = document.getElementById('login-pw').value;
-      const errEl = document.getElementById('login-error');
-      errEl.style.display = 'none';
-      try {
-        await signInWithEmailAndPassword(auth, email, pw);
-      } catch(e) {
-        errEl.style.display = 'block';
-      }
-    };
-
-    window.doLogout = () => signOut(auth);
+    window.doLogout = async () => { await signOut(auth); window.location.href = 'index.html'; };
 
     async function initApp() {
       await laadConfig();

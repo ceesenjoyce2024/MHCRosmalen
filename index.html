@@ -2,103 +2,66 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MHC Rosmalen – TC Portaal</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <title>MHC Rosmalen – Portaal</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.ready).then(reg=>reg.update());}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --navy: #0E2A5A; --gold: #F5A800; --gold-dark: #C98A00;
-      --white: #fff; --gray-100: #F4F5F7; --gray-200: #E5E7EB;
-      --gray-300: #D1D5DB; --gray-500: #6B7280; --radius: 12px;
-    }
-    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: var(--navy); padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
-    header img { width: 52px; height: 52px; object-fit: contain; }
-    header h1 { color: var(--white); font-size: 1.2rem; font-weight: 600; line-height: 1.2; }
-    header span { color: var(--gold); display: block; font-size: 0.78rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
-    .admin-link { margin-left: auto; font-size: 0.8rem; color: rgba(255,255,255,0.5); text-decoration: none; }
-    .admin-link:hover { color: var(--white); }
-    main { flex: 1; max-width: 720px; width: 100%; margin: 0 auto; padding: 3rem 1.5rem; }
-    .welcome { text-align: center; margin-bottom: 2.5rem; }
-    .welcome h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: .5rem; }
-    .welcome p { font-size: 1rem; color: var(--gray-500); line-height: 1.6; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
-    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.75rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: .75rem; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
-    .card:not(.disabled):hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(14,42,90,0.1); border-color: var(--gold); }
-    .card.disabled { opacity: .45; pointer-events: none; border-style: dashed; }
-    .card-icon { width: 44px; height: 44px; background: #FFF8E6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-    .card h3 { font-size: 1rem; font-weight: 600; }
-    .card p { font-size: 0.875rem; color: var(--gray-500); line-height: 1.5; flex: 1; }
-    .card-btn { display: inline-flex; align-items: center; gap: .4rem; font-size: 0.875rem; font-weight: 500; color: var(--gold-dark); margin-top: .25rem; }
-    .card-btn::after { content: '→'; }
-    .badge { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; align-self: flex-start; }
-    .badge-open { background: #D1FAE5; color: #065F46; }
-    .badge-dicht { background: #FEE2E2; color: #991B1B; }
-    .badge-new { background: var(--gold); color: var(--navy); }
-    footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--gray-500); border-top: 1px solid var(--gray-300); }
-    #seizoen-label { color: var(--gold-dark); }
-
-    @media(max-width:600px) {
-      header { padding: .875rem 1rem; }
-      header img { width: 38px; height: 38px; }
-      header h1 { font-size: 1rem; }
-      header span { font-size: .7rem; }
-      .admin-link { font-size: .75rem; }
-      main { padding: 1.5rem .75rem 2rem; }
-      .welcome h2 { font-size: 1.25rem; }
-      .welcome p { font-size: .9rem; }
-      .cards { grid-template-columns: 1fr; }
-      .card { padding: 1.25rem 1rem; }
-    }
+    :root { --navy: #0E2A5A; --gold: #F5A800; --white: #fff; --gray-100: #F4F5F7; --gray-300: #D1D5DB; --gray-500: #6B7280; --danger: #DC2626; --radius: 12px; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; }
+    .login-wrap { width: 100%; max-width: 400px; }
+    .logo-header { text-align: center; margin-bottom: 2rem; }
+    .logo-header img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 1rem; }
+    .logo-header h1 { font-size: 1.4rem; font-weight: 600; color: var(--navy); }
+    .logo-header p { font-size: .875rem; color: var(--gray-500); margin-top: .25rem; }
+    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 2rem; }
+    .card h2 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: .5rem; text-align: center; }
+    .card p { font-size: .875rem; color: var(--gray-500); text-align: center; margin-bottom: 1.5rem; line-height: 1.5; }
+    .google-btn { width: 100%; padding: 11px 16px; font-family: inherit; font-size: .9375rem; font-weight: 500; background: var(--white); color: #3C4043; border: 1px solid #D1D5DB; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: .75rem; transition: background .15s, box-shadow .15s; }
+    .google-btn:hover { background: #F8F9FA; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .google-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .error-msg { font-size: .8125rem; color: var(--danger); text-align: center; margin-top: 1rem; display: none; }
+    .loading { font-size: .875rem; color: var(--gray-500); text-align: center; margin-top: 1rem; display: none; }
+    footer { margin-top: 2rem; font-size: .75rem; color: var(--gray-500); text-align: center; }
+    @media(max-width:400px) { .card { padding: 1.5rem 1rem; } .logo-header img { width: 70px; height: 70px; } }
   </style>
-  <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.ready).then(reg=>reg.update());}</script>
 </head>
 <body>
-  <header>
-    <img src="logo_mhcrosmalen.gif" alt="Logo MHC Rosmalen">
-    <div>
+  <div class="login-wrap">
+    <div class="logo-header">
+      <img src="logo_mhcrosmalen.gif" alt="MHC Rosmalen">
       <h1>MHC Rosmalen</h1>
-      <span>Technische commissie portaal</span>
+      <p>Technische coördinatoren portaal</p>
     </div>
-    <a href="admin.html" class="admin-link">TC beheer →</a>
-  </header>
-
-  <main>
-    <div class="welcome">
-      <h2>Welkom bij het TC-portaal</h2>
-      <p>Hier vind je alle formulieren en informatie voor trainers en coaches van de prestatieteams bij MHC Rosmalen.</p>
+    <div class="card">
+      <h2>Inloggen</h2>
+      <p>Log in met je Google-account om toegang te krijgen tot het portaal.</p>
+      <button class="google-btn" id="google-btn" onclick="loginMetGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Inloggen met Google
+      </button>
+      <div class="error-msg" id="error-msg">Je account heeft geen toegang tot dit portaal.</div>
+      <div class="loading" id="loading">Bezig met inloggen...</div>
     </div>
-
-    <div class="cards">
-      <a class="card" href="Prestatie_formulier.html" id="formulier-card">
-        <span class="badge badge-new" id="card-badge">Laden...</span>
-        <div class="card-icon">📋</div>
-        <h3>Inventarisatie <span id="seizoen-label">...</span></h3>
-        <p id="card-desc">Vul hier je trainingsdagen, voorkeursdagen en kwalificaties in voor het aankomend seizoen.</p>
-        <span class="card-btn">Formulier invullen</span>
-      </a>
-
-      <div class="card disabled">
-        <div class="card-icon" style="background:#F0F0F0;">🏑</div>
-        <h3>Trainersrooster</h3>
-        <p>Het trainersrooster wordt hier binnenkort gepubliceerd.</p>
-        <span class="card-btn" style="color:var(--gray-500);">Binnenkort beschikbaar</span>
-      </div>
-    </div>
-  </main>
-
-  <footer>&copy; 2026 MHC Rosmalen – Technische commissie</footer>
+  </div>
+  <footer>&copy; 2026 MHC Rosmalen – Technische coördinatoren</footer>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, get, goOffline, goOnline } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
@@ -110,34 +73,49 @@
       appId: "1:396855295814:web:28dd001dcdad4dc861af47"
     });
 
+    const auth = getAuth(app);
     const db = getDatabase(app);
+    const provider = new GoogleAuthProvider();
 
-    try {
-      goOffline(db); goOnline(db);
-      const snap = await get(ref(db, 'seizoen_config'));
-      const config = snap.val();
-      if (config) {
-        document.getElementById('seizoen-label').textContent = config.naam || '';
-        const open = config.formulier_open === true;
-        const badge = document.getElementById('card-badge');
-        const card = document.getElementById('formulier-card');
-        if (open) {
-          badge.textContent = 'Open';
-          badge.className = 'badge badge-open';
-        } else {
-          badge.textContent = 'Gesloten';
-          badge.className = 'badge badge-dicht';
-          card.classList.add('disabled');
-          document.getElementById('card-desc').textContent = 'De inschrijving voor dit seizoen is momenteel gesloten.';
-        }
-      } else {
-        document.getElementById('seizoen-label').textContent = '';
-        document.getElementById('card-badge').textContent = 'Nog geen seizoen';
-        document.getElementById('card-badge').className = 'badge badge-dicht';
-      }
-    } catch(e) {
-      console.error(e);
+    async function getRol(email) {
+      const key = email.replace(/\./g, ',');
+      const snap = await get(ref(db, `gebruikers/${key}`));
+      return snap.val()?.rol || null;
     }
+
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        const rol = await getRol(user.email);
+        if (rol) { window.location.href = 'dashboard.html'; }
+      }
+    });
+
+    window.loginMetGoogle = async function() {
+      const btn = document.getElementById('google-btn');
+      const errEl = document.getElementById('error-msg');
+      const loadEl = document.getElementById('loading');
+      errEl.style.display = 'none';
+      btn.disabled = true;
+      loadEl.style.display = 'block';
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const rol = await getRol(result.user.email);
+        if (rol) {
+          window.location.href = 'dashboard.html';
+        } else {
+          errEl.style.display = 'block';
+          await signOut(auth);
+          btn.disabled = false;
+          loadEl.style.display = 'none';
+        }
+      } catch(e) {
+        errEl.textContent = 'Inloggen mislukt. Probeer het opnieuw.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        loadEl.style.display = 'none';
+        console.error(e);
+      }
+    };
   </script>
 </body>
 </html>
