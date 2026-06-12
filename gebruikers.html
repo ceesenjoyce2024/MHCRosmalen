@@ -69,11 +69,21 @@
       header img { width: 34px; height: 34px; }
       main { padding: 1.25rem .75rem 3rem; }
       .header-user { display: none; }
-      table { font-size: .8rem; }
-      th, td { padding: 8px 8px; }
       .modal { max-width: 100%; border-radius: 0; }
       .modal-overlay { padding: 0; align-items: flex-end; }
+      /* Tabel verbergen op mobiel */
+      .tabel-desktop { display: none; }
+      /* Kaartjes tonen op mobiel */
+      .kaarten-mobiel { display: flex; flex-direction: column; gap: .75rem; }
     }
+    @media(min-width:601px) {
+      .kaarten-mobiel { display: none; }
+    }
+    .gebruiker-kaart { background: var(--white); border-radius: 10px; border: 1px solid var(--gray-300); padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .gebruiker-kaart-info { flex: 1; min-width: 0; }
+    .gebruiker-kaart-naam { font-weight: 600; font-size: .9375rem; margin-bottom: .2rem; }
+    .gebruiker-kaart-email { font-size: .8rem; color: var(--gray-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gebruiker-kaart-rol { margin-top: .4rem; }
   </style>
 </head>
 <body>
@@ -202,23 +212,38 @@
         wrap.innerHTML = '<div class="empty-state">Geen gebruikers gevonden.</div>';
         return;
       }
+
+      // Desktop tabel
       const rows = gebruikers.map(g => `
         <tr>
           <td><strong>${g.naam || '—'}</strong></td>
           <td>${g.email || '—'}</td>
           <td><span class="rol-badge ${rolBadge[g.rol] || ''}">${rolLabels[g.rol] || g.rol}</span></td>
-          <td>
-            <div class="actions">
-              <button class="btn btn-secondary btn-sm" onclick="openBewerk('${g._key}')">Wijzigen</button>
-            </div>
-          </td>
+          <td><div class="actions"><button class="btn btn-secondary btn-sm" onclick="openBewerk('${g._key}')">Wijzigen</button></div></td>
         </tr>
       `).join('');
+
+      // Mobiele kaartjes
+      const kaarten = gebruikers.map(g => `
+        <div class="gebruiker-kaart">
+          <div class="gebruiker-kaart-info">
+            <div class="gebruiker-kaart-naam">${g.naam || '—'}</div>
+            <div class="gebruiker-kaart-email">${g.email || '—'}</div>
+            <div class="gebruiker-kaart-rol"><span class="rol-badge ${rolBadge[g.rol] || ''}">${rolLabels[g.rol] || g.rol}</span></div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="openBewerk('${g._key}')">Wijzigen</button>
+        </div>
+      `).join('');
+
       wrap.innerHTML = `
-        <table>
-          <thead><tr><th>Naam</th><th>E-mail</th><th>Rol</th><th></th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>`;
+        <div class="tabel-desktop">
+          <table>
+            <thead><tr><th>Naam</th><th>E-mail</th><th>Rol</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="kaarten-mobiel">${kaarten}</div>
+      `;
     }
 
     window.openNieuw = function() {
