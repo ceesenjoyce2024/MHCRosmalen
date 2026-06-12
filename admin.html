@@ -391,6 +391,7 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app-screen').style.display = 'block';
       document.getElementById('header-user').textContent = `${data.naam || user.displayName} – ${rolLabel}`;
+      huidigRol = data.rol;
 
       // Bestuurslid én lijncoordinator: alleen lezen
       if (data.rol === 'bestuurslid' || data.rol === 'lijncoordinator') {
@@ -449,7 +450,15 @@
       if (huidigSeizoenKey) sel.value = huidigSeizoenKey;
     }
 
+    let huidigRol = null; // bijhouden voor gebruik in functies
+
     window.toggleFormulier = async function(open) {
+      if (huidigRol === 'bestuurslid' || huidigRol === 'lijncoordinator') {
+        // Zet toggle terug naar originele staat
+        const snap = await get(ref(db, 'seizoen_config'));
+        document.getElementById('formulier-toggle').checked = snap.val()?.formulier_open === true;
+        return;
+      }
       document.getElementById('toggle-label').textContent = open ? 'Formulier open' : 'Formulier gesloten';
       await update(ref(db, 'seizoen_config'), { formulier_open: open });
       showToast(open ? 'Formulier is nu open' : 'Formulier is nu gesloten');
