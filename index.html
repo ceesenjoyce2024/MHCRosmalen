@@ -76,6 +76,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
 
     async function getRol(email) {
       const key = email.replace(/[.@]/g, '_');
