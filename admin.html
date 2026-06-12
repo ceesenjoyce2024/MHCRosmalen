@@ -390,7 +390,7 @@
 
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app-screen').style.display = 'block';
-      document.getElementById('header-user').textContent = `${data.naam || user.displayName} – ${rolLabel}`;
+      document.getElementById('header-user').textContent = `${data.naam || user.displayName || user.email.split('@')[0]} – ${rolLabel}`;
       huidigRol = data.rol;
 
       // Bestuurslid én lijncoordinator: alleen lezen

@@ -184,7 +184,7 @@
         window.location.href = 'dashboard.html';
         return;
       }
-      document.getElementById('header-user').textContent = data.naam || user.displayName;
+      document.getElementById('header-user').textContent = data.naam || user.displayName || user.email.split('@')[0];
       laadGebruikers();
     });
 
