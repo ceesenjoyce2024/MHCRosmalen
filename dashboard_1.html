@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Dashboard – MHC Rosmalen</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.ready).then(reg=>reg.update());}</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --navy: #0E2A5A; --gold: #F5A800; --gold-dark: #C98A00; --white: #fff; --gray-100: #F4F5F7; --gray-200: #E5E7EB; --gray-300: #D1D5DB; --gray-500: #6B7280; --radius: 12px; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: var(--navy); padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    header img { width: 44px; height: 44px; object-fit: contain; }
+    header h1 { color: var(--white); font-size: 1.1rem; font-weight: 600; line-height: 1.2; }
+    header span.sub { color: var(--gold); display: block; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+    .user-info { text-align: right; }
+    .user-name { font-size: .875rem; color: var(--white); font-weight: 500; }
+    .user-rol { font-size: .75rem; color: rgba(255,255,255,0.6); }
+    .logout-btn { font-size: .8rem; color: rgba(255,255,255,0.7); background: none; border: 1px solid rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+    .logout-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.5); }
+    main { flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .welkom { margin-bottom: 2rem; }
+    .welkom h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: .25rem; }
+    .welkom p { font-size: .9rem; color: var(--gray-500); }
+    .sectie-titel { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-500); margin-bottom: .75rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-300); padding: 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: .6rem; transition: transform .15s, box-shadow .15s, border-color .15s; cursor: pointer; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,42,90,0.1); border-color: var(--gold); }
+    .card.disabled { opacity: .45; pointer-events: none; border-style: dashed; }
+    .card-icon { width: 42px; height: 42px; background: #FFF8E6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+    .card h3 { font-size: .9375rem; font-weight: 600; }
+    .card p { font-size: .8125rem; color: var(--gray-500); line-height: 1.5; flex: 1; }
+    .card-arrow { font-size: .8125rem; font-weight: 500; color: var(--gold-dark); }
+    .rol-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .rol-sa { background: #FDE8FF; color: #7E22CE; }
+    .rol-tc { background: #DBEAFE; color: #1E40AF; }
+    .rol-lc { background: #D1FAE5; color: #065F46; }
+    .rol-bs { background: #F3F4F6; color: #374151; }
+    footer { text-align: center; padding: 1.5rem; font-size: .8rem; color: var(--gray-500); border-top: 1px solid var(--gray-300); }
+    @media(max-width:600px) {
+      header { padding: .875rem 1rem; }
+      header img { width: 34px; height: 34px; }
+      header h1 { font-size: .95rem; }
+      .user-info { display: none; }
+      main { padding: 1.5rem .75rem; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo_mhcrosmalen.gif" alt="MHC Rosmalen">
+    <div>
+      <h1>MHC Rosmalen</h1>
+      <span class="sub">Technische coördinatoren portaal</span>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-name" id="user-name">—</div>
+        <div class="user-rol" id="user-rol">—</div>
+      </div>
+      <button class="logout-btn" onclick="uitloggen()">Uitloggen</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="welkom">
+      <h2>Welkom, <span id="welkom-naam">—</span>!</h2>
+      <p>Je bent ingelogd als <span id="welkom-rol-badge"></span></p>
+    </div>
+
+    <div class="sectie-titel">Beheer</div>
+    <div class="cards" id="cards-beheer">
+      <!-- Wordt dynamisch gevuld op basis van rol -->
+    </div>
+
+    <div class="sectie-titel">Openbaar</div>
+    <div class="cards">
+      <a class="card" href="Prestatie_formulier.html">
+        <div class="card-icon">📋</div>
+        <h3>Prestatieformulier</h3>
+        <p>Bekijk het openbare formulier voor trainers en coaches.</p>
+        <span class="card-arrow">Bekijken →</span>
+      </a>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 MHC Rosmalen – Technische coördinatoren</footer>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB-4C_wE2_ueGIf44FL9UK2lmg6Cn7SxdU",
+      authDomain: "mhcrosmalen-a09a0.firebaseapp.com",
+      databaseURL: "https://mhcrosmalen-a09a0-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mhcrosmalen-a09a0",
+      storageBucket: "mhcrosmalen-a09a0.firebasestorage.app",
+      messagingSenderId: "396855295814",
+      appId: "1:396855295814:web:28dd001dcdad4dc861af47"
+    });
+
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const rolLabels = {
+      superadmin: 'Superadmin',
+      technische_coordinator: 'Technische coördinator',
+      lijncoordinator: 'Lijncoördinator',
+      bestuurslid: 'Bestuurslid'
+    };
+
+    const rolBadgeClass = {
+      superadmin: 'rol-sa',
+      technische_coordinator: 'rol-tc',
+      lijncoordinator: 'rol-lc',
+      bestuurslid: 'rol-bs'
+    };
+
+    // Kaarten per rol
+    const kaarten = {
+      superadmin: [
+        { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Beheer seizoenen, bekijk inzendingen en exporteer naar Excel.', link: 'admin.html', knop: 'Naar beheer →' },
+        { icon: '👥', titel: 'Gebruikersbeheer', omschrijving: 'Voeg gebruikers toe, wijzig rollen of verwijder accounts.', link: 'gebruikers.html', knop: 'Beheren →' },
+      ],
+      technische_coordinator: [
+        { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Beheer seizoenen, bekijk inzendingen en exporteer naar Excel.', link: 'admin.html', knop: 'Naar beheer →' },
+      ],
+      lijncoordinator: [
+        { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Bekijk de inzendingen van trainers en coaches.', link: 'admin.html', knop: 'Bekijken →' },
+      ],
+      bestuurslid: [
+        { icon: '🏑', titel: 'Trainers inventarisatie', omschrijving: 'Bekijk de inzendingen van trainers en coaches (alleen lezen).', link: 'admin.html', knop: 'Bekijken →' },
+      ]
+    };
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      const key = user.email.replace(/\./g, ',');
+      const snap = await get(ref(db, `gebruikers/${key}`));
+      const data = snap.val();
+
+      if (!data) { await signOut(auth); window.location.href = 'index.html'; return; }
+
+      const naam = data.naam || user.displayName || user.email;
+      const rol = data.rol;
+      const rolLabel = rolLabels[rol] || rol;
+
+      // Header
+      document.getElementById('user-name').textContent = naam;
+      document.getElementById('user-rol').textContent = rolLabel;
+      document.getElementById('welkom-naam').textContent = naam;
+
+      // Rol badge
+      const badge = document.getElementById('welkom-rol-badge');
+      badge.innerHTML = `<span class="rol-badge ${rolBadgeClass[rol]||''}">${rolLabel}</span>`;
+
+      // Kaarten
+      const container = document.getElementById('cards-beheer');
+      const lijst = kaarten[rol] || [];
+      container.innerHTML = lijst.map(k => `
+        <a class="card ${k.binnenkort ? 'disabled' : ''}" href="${k.binnenkort ? '#' : k.link}">
+          <div class="card-icon">${k.icon}</div>
+          <h3>${k.titel}</h3>
+          <p>${k.omschrijving}</p>
+          <span class="card-arrow">${k.binnenkort ? 'Binnenkort beschikbaar' : k.knop}</span>
+        </a>
+      `).join('');
+    });
+
+    window.uitloggen = async function() {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>
