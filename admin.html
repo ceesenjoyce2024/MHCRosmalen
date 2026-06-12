@@ -471,7 +471,11 @@
         return;
       }
       huidigSeizoenKey = key;
-      // Toon activeer-knop alleen als het geselecteerde seizoen NIET het actieve is
+      // Alleen TC en superadmin mogen activeren
+      if (huidigRol === 'bestuurslid' || huidigRol === 'lijncoordinator') {
+        await loadInzendingen();
+        return;
+      }
       const snap = await get(ref(db, 'seizoen_config'));
       const config = snap.val() || {};
       const isActief = config.actief_seizoen === key;
@@ -481,6 +485,7 @@
     };
 
     window.activeerSeizoen = async function() {
+      if (huidigRol === 'bestuurslid' || huidigRol === 'lijncoordinator') return;
       const key = document.getElementById('seizoen-select').value;
       if (!key) return;
       const sel = document.getElementById('seizoen-select');
@@ -504,6 +509,7 @@
     window.wisselSeizoen = window.seizoenGekozen; // backwards compat
 
     window.maakSeizoen = async function() {
+      if (huidigRol === 'bestuurslid' || huidigRol === 'lijncoordinator') return;
       const naam = document.getElementById('nieuw-naam').value.trim();
       const key = document.getElementById('nieuw-key').value.trim();
       if (!naam || !key) { alert('Vul zowel naam als sleutel in.'); return; }
@@ -747,6 +753,7 @@
     let huidigEditKey = null;
 
     window.openModal = function(key) {
+      if (huidigRol === 'bestuurslid' || huidigRol === 'lijncoordinator') return;
       const r = allInzendingen.find(x => x._key === key);
       if (!r) return;
       huidigEditKey = key;
